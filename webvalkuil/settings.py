@@ -104,7 +104,7 @@ MIDDLEWARE_CLASSES = (
     #'django.contrib.messages.middleware.MessageMiddleware',
 )
 
-ROOT_URLCONF = 'webvalkuil.urls'
+ROOT_URLCONF = 'urls'
 
 TEMPLATE_DIRS = (
     ROOT_DIR + "webvalkuil/templates",
@@ -116,7 +116,7 @@ TEMPLATE_DIRS = (
 INSTALLED_APPS = (
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'webvalkuil.valkuil',
+    'valkuil',
     #'django.contrib.sessions',
     #'django.contrib.sites',
     #'django.contrib.messages',
