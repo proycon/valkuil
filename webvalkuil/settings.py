@@ -22,9 +22,6 @@ DATABASES = {
 }
 
 
-
-
-
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -49,9 +46,24 @@ USE_I18N = True
 USE_L10N = True
 
 
-
 hostname = gethostname()
-if hostname == "aurora" or hostname == "roma": #proycon's laptop/server
+if hostname == "spitfire" or hostname == "spitfire.science.ru.nl":  #Nijmegen
+    ROOT_DIR = "/var/www2/valkuil/live/repo/valkuil/"
+    DOCDIR = "/var/www2/valkuil/live/writable/userdocs/" 
+    CLAMSERVICE = 'http://webservices.ticc.uvt.nl/valkuil/'  #TODO: ADAPT, still running in Tilburg
+    
+    MEDIA_URL = 'http://valkuil.science.ru.nl/style/' #TODO: adapt to new domain            
+elif hostname == 'echo' or hostname == 'nomia' or hostname == 'echo.uvt.nl' or hostname == 'nomia.uvt.nl': #Tilburg
+    ROOT_DIR = "/var/www/valkuil/"
+    DOCDIR = ROOT_DIR + 'userdocs/'
+    CLAMSERVICE = 'http://webservices.ticc.uvt.nl/valkuil/'    
+    
+    # URL that handles the media served from MEDIA_ROOT. Make sure to use a
+    # trailing slash if there is a path component (optional in other cases).
+    # Examples: "http://media.lawrence.com", "http://example.com/media/"
+    MEDIA_URL = 'http://valkuil.net/style/'
+        
+elif hostname == "aurora" or hostname == "roma": #proycon's laptop/server
     ROOT_DIR = "/home/proycon/work/valkuil/"
     DOCDIR = ROOT_DIR + 'userdocs/'
     CLAMSERVICE = 'http://' + hostname + ':8080'
@@ -61,14 +73,7 @@ if hostname == "aurora" or hostname == "roma": #proycon's laptop/server
     # Examples: "http://media.lawrence.com", "http://example.com/media/"
     MEDIA_URL = ''
 else:
-    ROOT_DIR = "/var/www/valkuil/"
-    DOCDIR = ROOT_DIR + 'userdocs/'
-    CLAMSERVICE = 'http://webservices.ticc.uvt.nl/valkuil/'    
-    
-    # URL that handles the media served from MEDIA_ROOT. Make sure to use a
-    # trailing slash if there is a path component (optional in other cases).
-    # Examples: "http://media.lawrence.com", "http://example.com/media/"
-    MEDIA_URL = 'http://webservices.ticc.uvt.nl/style/'
+    raise Exception("Don't know where I'm running from!")
 
 
 # Absolute path to the directory that holds media.
