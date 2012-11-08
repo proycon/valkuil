@@ -11,7 +11,7 @@
 #include<unistd.h>
 
 #define PORT "2000"
-#define MACHINE "137.56.83.160"
+#define MACHINE "localhost"
 #define NRFEAT 7
 #define MINOCC 5.
 #define DEBUG 0
