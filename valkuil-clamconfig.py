@@ -52,7 +52,17 @@ elif host == 'applejack': #Nijmegen
     PORT = 80
     URLPREFIX = "valkuil"
     BINDIR = "/vol/customopt/uvt-ru/bin/"
-    VALKUILDIR = "/scratch2/www/webservices-lst/live/repo/valkuil/" 
+    VALKUILDIR = "/scratch2/www/webservices-lst/live/repo/valkuil/"
+    USERS_MYSQL = {
+        'host': 'mysql-clamopener.science.ru.nl', 
+        'user': 'clamopener',        
+        'password': D(open(environ['CLAMOPENER_KEYFILE']).read().strip()),
+        'database': 'clamopener',
+        'table': 'clamusers_clamusers'
+    }
+    DEBUG = True
+    REALM = "WEBSERVICES-LST"
+    DIGESTOPAQUE = open(environ['CLAM_DIGESTOPAQUEFILE']).read().strip() 
 elif host == 'echo' or host == 'nomia' or host == 'echo.uvt.nl' or host == 'nomia.uvt.nl': #Tilburg        
     #Assuming ILK server
     CLAMDIR = "/var/www/clam"
