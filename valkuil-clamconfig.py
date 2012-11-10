@@ -20,7 +20,8 @@ from clam.common.converters import *
 from clam.common.viewers import *
 from clam.common.data import *
 from clam.common.digestauth import pwhash
-from os import uname
+from os import uname, environ
+from base64 import b64decode as D
 import sys
 
 REQUIRE_VERSION = 0.7
@@ -62,7 +63,7 @@ elif host == 'applejack': #Nijmegen
     }
     DEBUG = True
     REALM = "WEBSERVICES-LST"
-    DIGESTOPAQUE = open(environ['CLAM_DIGESTOPAQUEFILE']).read().strip() 
+    #DIGESTOPAQUE = open(environ['CLAM_DIGESTOPAQUEFILE']).read().strip() 
 elif host == 'echo' or host == 'nomia' or host == 'echo.uvt.nl' or host == 'nomia.uvt.nl': #Tilburg        
     #Assuming ILK server
     CLAMDIR = "/var/www/clam"
