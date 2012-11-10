@@ -1,5 +1,7 @@
 # Django settings for webvalkuil project.
 from socket import gethostname
+from base64 import b64decode as D
+from os import environ
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -50,9 +52,14 @@ hostname = gethostname()
 if hostname == "spitfire" or hostname == "spitfire.science.ru.nl":  #Nijmegen
     ROOT_DIR = "/var/www2/valkuil/live/repo/valkuil/"
     DOCDIR = "/var/www2/valkuil/live/writable/userdocs/" 
-    CLAMSERVICE = 'http://webservices.ticc.uvt.nl/valkuil/'  #TODO: ADAPT, still running in Tilburg
+    CLAMSERVICE = 'http://lst-webservices.science.ru.nl/valkuil/'
     
-    MEDIA_URL = 'http://valkuil.science.ru.nl/style/' #TODO: adapt to new domain            
+    MEDIA_URL = 'http://valkuil.science.ru.nl/style/' #TODO: adapt to new domains
+    
+    CLAMUSER = 'internal'
+    CLAMPASS = D(open(environ['CLAMOPENER_PASSFILE']).read().strip())
+    
+    DEBUG = False #No debug in production environment            
 elif hostname == 'echo' or hostname == 'nomia' or hostname == 'echo.uvt.nl' or hostname == 'nomia.uvt.nl': #Tilburg
     ROOT_DIR = "/var/www/valkuil/"
     DOCDIR = ROOT_DIR + 'userdocs/'
