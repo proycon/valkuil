@@ -203,7 +203,7 @@ class SoundAlikeModule(AbstractModule):
         if self.done:
             #Reading module output and integrating in FoLiA document
             for word, fields in self.readcolumnedoutput(self.outputdir + 'soundalike_checker.test.out'):                                            
-                if len(fields) >= 2:u
+                if len(fields) >= 2:
                     #Add correction suggestion
                     #(The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='klankfout', annotator=self.NAME)
@@ -849,7 +849,7 @@ else:
     os.system('dos2unix ' + inputfile)
     errout("Starting tokeniser...")
     if sys.argv[1] == 'clam':
-        os.system(bindir + 'ucto -c /var/www/etc/ucto/tokconfig-nl -x ' + id + ' ' + inputfile + ' > ' + outputdir + id + '.xml')
+        os.system(bindir + 'ucto -c ' + bindir + '/../etc/ucto/tokconfig-nl -x ' + id + ' ' + inputfile + ' > ' + outputdir + id + '.xml')
     else:
         os.system(bindir + 'ucto -L nl -x ' + id + ' ' + inputfile + ' > ' + outputdir + id + '.xml')
 
