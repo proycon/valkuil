@@ -56,7 +56,7 @@ for arg in sys.argv[1:]:
 
 if not files:
     print >>sys.stderr, "Syntax: valkuilclient.py TEXTFILES"
-    print >>sys.stderr, "Options: --username=   --password="
+    print >>sys.stderr, "Options: --user=   --pass="
     sys.exit(1)    
 
 
