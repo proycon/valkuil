@@ -121,18 +121,20 @@ while data.status != clam.common.status.DONE:
     data = clamclient.get(project) #get status again
     print "\tPROJECT IS RUNNING: " + str(data.completion) + '% -- ' + data.statusmessage
 
+found = False
 
 #Download all output files to current directory
 for outputfile in data.output:
     if str(outputfile)[-4:] == '.xml':
-        try:
-            outputfile.loadmetadata()
-        except:
-            continue            
+        outputfile.loadmetadata()      
         if outputfile.metadata.provenance.outputtemplate_id == 'foliaoutput':
             print "\tDownloading " + str(outputfile) + " ..."
             targetfile = os.path.basename(str(outputfile))
             outputfile.copy(targetfile)
+            found = True
+    
+if not found:    
+    print >>sys.stderr, "ERROR: No output found"
     
 #delete our project (remember, it was temporary, otherwise clients would leave a mess)
 clamclient.delete(project)
