@@ -59,12 +59,19 @@ int main(int argc, char *argv[])
       fscanf(bron,"%d %s ",
 	     &readnr,word);
 
+      fprintf(stderr,"%d %s\n",
+	      readnr,word);
+
       lexicon[nrlex]=malloc((strlen(word)+1)*sizeof(char));
       strcpy(lexicon[nrlex],word);
       freqs[nrlex]=readnr;
       hash[nrlex]=sdbm(word);
 
       nrlex++;
+
+      if (nrlex%1000000==0)
+	fprintf(stderr,"read %d words (%d %s)\n",
+		nrlex,readnr,word);
 
       lexicon=realloc(lexicon,(nrlex+1)*sizeof(char*));
       freqs=realloc(freqs,(nrlex+1)*sizeof(unsigned long));
@@ -98,7 +105,7 @@ int main(int argc, char *argv[])
 	  if (errhash==hash[k])
 	    errfreq=freqs[k];
 	}
-      if (errfreq>0)
+      if (errfreq>10)
 	fprintf(stderr,"corword: [%s]-[%ld], errword: [%s]-[%ld]\n",
 		corword,corfreq,errword,errfreq);
       counter++;
