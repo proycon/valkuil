@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
   char **correct;
   char *part;
   char readstr[1024];
-  int  i,j,nrerrors,readfreq;
+  int  i,j,nrerrors,readfreq,counter=0;
   char err;
 
   nrerrors=0;
@@ -64,6 +64,13 @@ int main(int argc, char *argv[])
 		err=1;
 	      }
 	}
+      counter++;
+      if (counter%10000==0)
+	{
+	  fprintf(stderr,"%d entries processed\n",
+		  counter);
+	}
+
       if (!err)
 	fprintf(stdout,"%d %s\n",
 		readfreq,readstr);
