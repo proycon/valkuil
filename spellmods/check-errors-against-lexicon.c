@@ -19,7 +19,7 @@
 #define MINLENGTH 5
 #define MINFREQTHRESHOLD 10000
 #define MAXNRCLOSEST 5
-#define DEBUG2 0
+#define DEBUG2 1
 #define DEBUG 1
 
 unsigned long sdbm(char *str);
@@ -30,12 +30,13 @@ int main(int argc, char *argv[])
   char **lexicon;
   unsigned long *freqs;
   unsigned long *hash;
-  char word[1024];
-  char memword[1024];
-  char corword[1024];
-  char errword[1024];
-  char capword[1024];
-  char witheword[1024];
+  char word[4096];
+  char memword[4096];
+  char corword[4096];
+  char errword[4096];
+  char capword[4096];
+  char witheword[4096];
+  char line[32768];
   char closestword[MAXNRCLOSEST+1][1024];
   int  closest[MAXNRCLOSEST+1];
   unsigned long closestfreq[MAXNRCLOSEST+1];
@@ -46,6 +47,8 @@ int main(int argc, char *argv[])
   unsigned long freqthres=MINFREQTHRESHOLD;
   char inlex,withe,cap,inflection;
 
+  setbuf(stdout,NULL);
+
   /* allocate lexicon */
   lexicon=malloc(sizeof(char*));
   freqs=malloc(sizeof(unsigned long));
@@ -54,13 +57,13 @@ int main(int argc, char *argv[])
   /* read lexicon */
   nrlex=0;
   bron=fopen(argv[1],"r");
-  while (!feof(bron))
+  readnr=999;
+  fgets(line,32768,bron);
+  while ((!feof(bron))&&
+	 (readnr>1))
     {
-      fscanf(bron,"%d %s ",
+      sscanf(line,"%d %s ",
 	     &readnr,word);
-
-      fprintf(stderr,"%d %s\n",
-	      readnr,word);
 
       lexicon[nrlex]=malloc((strlen(word)+1)*sizeof(char));
       strcpy(lexicon[nrlex],word);
@@ -69,13 +72,10 @@ int main(int argc, char *argv[])
 
       nrlex++;
 
-      if (nrlex%1000000==0)
-	fprintf(stderr,"read %d words (%d %s)\n",
-		nrlex,readnr,word);
-
       lexicon=realloc(lexicon,(nrlex+1)*sizeof(char*));
       freqs=realloc(freqs,(nrlex+1)*sizeof(unsigned long));
       hash=realloc(hash,(nrlex+1)*sizeof(unsigned long));
+      fgets(line,32768,bron);
     }
   fclose(bron);
 
@@ -105,9 +105,13 @@ int main(int argc, char *argv[])
 	  if (errhash==hash[k])
 	    errfreq=freqs[k];
 	}
-      if (errfreq>10)
+      if (((errfreq*5)>corfreq)&&
+	  (corfreq>0))
 	fprintf(stderr,"corword: [%s]-[%ld], errword: [%s]-[%ld]\n",
 		corword,corfreq,errword,errfreq);
+      else
+	fprintf(stdout,"%s\n",
+		memword);
       counter++;
       if (counter%1000==0)
 	fprintf(stderr,"processed %d word-error pairs\n",
