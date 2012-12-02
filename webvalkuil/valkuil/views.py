@@ -88,6 +88,7 @@ def process(request):
             
 
     if not found:
+        return render_to_response('error.html', {'errormessage': "Unable to retrieve file from CLAM service", 'debugmessage': " ".join([ str(x) for x in clamdata.output ])  }) 
         return HttpResponseForbidden("Unable to retrieve file from CLAM Service")        
         
     #remove project    
@@ -222,7 +223,7 @@ def viewer(request, id):
 
         return render_to_response('viewer.html', {'text': etree.tostring(html, pretty_print=True), 'errors': json.dumps(errors),'errorcount': len(errors)} ) 
     else:
-        return HttpResponseNotFound("No such document")
+        return render_to_response('error.html', {'errormessage': "No such document"} )
 
 def text(request, id):
     if os.path.exists(settings.DOCDIR + id + '.xml'):
@@ -231,14 +232,14 @@ def text(request, id):
         response['Content-Type'] = 'text/plain; charset=utf-8'
         return response
     else:
-        return HttpResponseNotFound("No such document")
+        return render_to_response('error.html', {'errormessage': "No such document"} )
         
 def xml(request, id):
     if os.path.exists(settings.DOCDIR + id + '.xml'):
         foliadoc = folia.Document(file=settings.DOCDIR + id + '.xml')        
         return HttpResponse(foliadoc.xmlstring(), mimetype="text/xml");
     else:
-        return HttpResponseNotFound("No such document")        
+        return render_to_response('error.html', {'errormessage': "No such document"}  )
 
 def log(request, id):
     if os.path.exists(settings.DOCDIR + id + '.log'):
@@ -247,7 +248,7 @@ def log(request, id):
         f.close()
         return HttpResponse(log, mimetype="text/plain");
     else:
-        return HttpResponseNotFound("No such document")        
+        return render_to_response('error.html', {'errormessage': "No such document"}      ) 
         
 def ignore(request, id):
     if os.path.exists(settings.DOCDIR + id + '.xml'):

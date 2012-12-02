@@ -30,14 +30,22 @@ import clam.common.status
 # You can obtain pynlpl from https://github.com/proycon/pynlpl
 from pynlpl.formats import folia
 
-url = 'http://webservices.ticc.uvt.nl/valkuil/'
+url = 'http://webservices-lst.science.ru.nl/valkuil/'
 sensitivity=0.95
 donate = False
+
+username = None
+password = None
+
 
 files = []
 #Process arguments and parameters:
 for arg in sys.argv[1:]:
-    if os.path.isfile(arg):
+    if arg[:7] == "--user=":
+        username = arg[7:]
+    elif arg[:7] == "--pass=":
+        password = arg[7:]
+    elif os.path.isfile(arg):
         files.append(arg)
     elif os.path.isdir(arg):
         files += [ x for x in glob.glob(arg + '/*') if x[0] != '.' ]
@@ -48,6 +56,7 @@ for arg in sys.argv[1:]:
 
 if not files:
     print >>sys.stderr, "Syntax: valkuilclient.py TEXTFILES"
+    print >>sys.stderr, "Options: --user=   --pass="
     sys.exit(1)    
 
 
@@ -55,7 +64,10 @@ print "Connecting to server..."
 
         
 #create client, connect to server, url is the full URL to the base of your webservice.
-clamclient = CLAMClient(url)
+if username and password: 
+    clamclient = CLAMClient(url,  username, password)
+else:
+    clamclient = CLAMClient(url)
 
 print "Creating project..."
    
@@ -109,18 +121,20 @@ while data.status != clam.common.status.DONE:
     data = clamclient.get(project) #get status again
     print "\tPROJECT IS RUNNING: " + str(data.completion) + '% -- ' + data.statusmessage
 
+found = False
 
 #Download all output files to current directory
 for outputfile in data.output:
     if str(outputfile)[-4:] == '.xml':
-        try:
-            outputfile.loadmetadata()
-        except:
-            continue            
+        outputfile.loadmetadata()      
         if outputfile.metadata.provenance.outputtemplate_id == 'foliaoutput':
             print "\tDownloading " + str(outputfile) + " ..."
             targetfile = os.path.basename(str(outputfile))
             outputfile.copy(targetfile)
+            found = True
+    
+if not found:    
+    print >>sys.stderr, "ERROR: No output found"
     
 #delete our project (remember, it was temporary, otherwise clients would leave a mess)
 clamclient.delete(project)
