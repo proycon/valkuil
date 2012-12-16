@@ -129,7 +129,8 @@ PROFILES = [
         ),
         #------------------------------------------------------------------------------------------------------------------------
         OutputTemplate('foliaoutput',FoLiAXMLFormat,'FoLiA Document with spelling suggestions',
-            filename='$INPUTSTRIPPEDFILENAME.xml',
+            removeextension=['.txt'],
+            extension='.xml',
             multi=True
         ),
     ),
@@ -141,7 +142,8 @@ PROFILES = [
         ),
         #------------------------------------------------------------------------------------------------------------------------
         OutputTemplate('foliaoutput',FoLiAXMLFormat,'FoLiA Document with spelling suggestions',
-            filename='$INPUTSTRIPPEDFILENAME.xml',
+            removeextension=['.xml'],
+            extension='.xml',
             multi=True
         ),
     ) 
