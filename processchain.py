@@ -847,7 +847,7 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
     #all modules done
 
     #process results and integrate into FoLiA
-    for module in modules:
+    for module in mods:
         module.process_result()
 
     ###### END ###### 
