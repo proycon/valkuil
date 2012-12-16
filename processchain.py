@@ -162,7 +162,6 @@ class ErrorListModule(AbstractModule):
                     #Add correction suggestion
                     #(The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-fout', annotator=self.NAME)
-            f.close()        
             
     def run(self):
         self.errout("MODULE: " + self.NAME)
@@ -187,8 +186,7 @@ class LexiconModule(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion
                     #(The last field holds the suggestion? (assumption, may differ per module))
-                    self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='woordenlijstfout', annotator=self.NAME)
-            f.close()                  
+                    self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='woordenlijstfout', annotator=self.NAME)             
     
     
     def run(self):                
@@ -207,7 +205,6 @@ class SoundAlikeModule(AbstractModule):
                     #Add correction suggestion
                     #(The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='klankfout', annotator=self.NAME)
-            f.close()                  
     
     
     def run(self):                
@@ -226,7 +223,7 @@ class GarbageChecker(AbstractModule):
                     #Add correction suggestion
                     #(The last field holds the suggestion? (assumption, may differ per module))
                     self.adderrordetection(word, cls='woordenlijstfout', annotator=self.NAME)
-            f.close()                  
+              
     
     
     def run(self):                
@@ -263,7 +260,7 @@ class SplitChecker(AbstractModule): #(merges in FoLiA terminology)
             if merge: 
                 merges.append(merge)      
                 text.append(prev)
-            f.close()                  
+                              
             for i, mergewords in enumerate(merges):
                 #Add correction suggestion
                 newword = text[i]
@@ -283,7 +280,6 @@ class RunonChecker(AbstractModule): #(splits in FoLiA terminology)
             for word, fields in self.readcolumnedoutput(self.outputdir + 'runon_checker.test.out'):
                 if len(fields) > 2:
                     self.splitcorrection(word, fields[1:], cls='spatiefout', annotator=self.NAME)
-            f.close()                  
     
     
     def run(self):                
@@ -300,7 +296,6 @@ class D_DT_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='werkwoordfout', annotator=self.NAME)
-            f.close()                      
     
     
     def run(self):                
@@ -319,7 +314,6 @@ class T_DT_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='werkwoordfout', annotator=self.NAME)
-            f.close()                      
     
     
     def run(self):                
@@ -338,7 +332,6 @@ class D_T_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='werkwoordfout', annotator=self.NAME)
-            f.close()                      
     
     
     def run(self):                
@@ -355,7 +348,6 @@ class TTE_TTEN_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='werkwoordfout', annotator=self.NAME)
-            f.close()                      
     
     
     def run(self):                
@@ -373,7 +365,6 @@ class T_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='t-uitgangfout', annotator=self.NAME)
-            f.close()                      
     
     
     def run(self):                
@@ -392,7 +383,6 @@ class WOPRChecker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='fout-volgens-context', annotator=self.NAME)
-            f.close()                      
         
     def run(self):                
         #Call module and ask it to produce output
@@ -409,7 +399,7 @@ class WikiChecker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='fout-volgens-context', annotator=self.NAME)
-            f.close()                      
+
         
     def run(self):                
         #Call module and ask it to produce output
@@ -426,7 +416,6 @@ class JOU_JOUW_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
     
     
     def run(self):                
@@ -445,7 +434,7 @@ class ZEI_ZIJ_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
+                                  
     
     
     def run(self):                
@@ -463,7 +452,6 @@ class HAAR_ZIJ_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
     
     def run(self):                
         #Call module and ask it to produce output
@@ -480,7 +468,7 @@ class WIL_WILT_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
+                                  
     
     def run(self):                
         #Call module and ask it to produce output
@@ -497,7 +485,7 @@ class DEZE_DIT_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
+                                  
     
     def run(self):                
         #Call module and ask it to produce output
@@ -514,7 +502,7 @@ class DIE_WELKE_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
+                                  
     
     def run(self):                
         #Call module and ask it to produce output
@@ -531,7 +519,7 @@ class HEN_HUN_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
+                                  
     
     
     def run(self):                
@@ -549,7 +537,7 @@ class DE_HET_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
+                                  
     
     
     def run(self):                
@@ -567,7 +555,7 @@ class HUN_ZIJ_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
+                      
     
     
     def run(self):                
@@ -586,7 +574,6 @@ class MIJ_IK_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
     
     
     def run(self):                
@@ -603,7 +590,6 @@ class BEIDE_BEIDEN_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
     
     
     def run(self):                
@@ -622,7 +608,6 @@ class NOG_NOCH_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
     
     def run(self):                
         #Call module and ask it to produce output
@@ -639,7 +624,6 @@ class HARD_HART_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
     
     def run(self):                
         #Call module and ask it to produce output
@@ -656,7 +640,6 @@ class ALS_DAN_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
     
     def run(self):                
         #Call module and ask it to produce output
@@ -673,7 +656,6 @@ class TE_TEN_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
     
     def run(self):                
         #Call module and ask it to produce output
@@ -690,7 +672,6 @@ class EENS_IS_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
     
     def run(self):                
         #Call module and ask it to produce output
@@ -707,7 +688,6 @@ class LICHT_LIGT_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
     
     def run(self):                
         #Call module and ask it to produce output
@@ -724,7 +704,6 @@ class GROOTTE_GROTE_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
     
     def run(self):                
         #Call module and ask it to produce output
@@ -741,7 +720,6 @@ class HOOGTE_HOOGTEN_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
     
     def run(self):                
         #Call module and ask it to produce output
@@ -758,7 +736,6 @@ class KAN_KEN_Checker(AbstractModule):
                 if len(fields) >= 2:
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
-            f.close()                      
     
     
     def run(self):                
@@ -779,6 +756,111 @@ modules = [WOPRChecker, ErrorListModule, LexiconModule, SoundAlikeModule, SplitC
 # disabled for now: WikiChecker, T_Checker, TTE_TTEN_Checker, TE_TEN_Checker, D_T_Checker, HUN_ZIJ_Checker, HAAR_ZIJ_Checker, HOOGTE_HOOGTEN_Checker, MIJ_IK_Checker, ALS_DAN_Checker, KAN_KEN_Checker, GarbageChecker, HEN_HUN_Checker, BEIDE_BEIDEN_Checker, JOU_JOUW_Checker, DE_HET_Checker, EENS_IS_Checker
 
 ################################################################################
+
+
+
+
+def errout(msg):
+    print >>sys.stderr,  "[" + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '] PROCESSING-CHAIN: ' + msg
+    
+def processor(queue):
+    while True:
+        job = queue.get() 
+        job.run()
+        queue.task_done()
+
+def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshold,standalone):
+    #detect ID from filename
+    id = os.path.basename(inputfile).split('.',1)[0].replace(' ','_')
+
+
+
+    #Step 1 - Tokenize input text (plaintext) and produce FoLiA output 
+    if inputfile[-4:] == '.xml':
+        shutil.copyfile(inputfile, outputdir+id+'.xml')
+    else:    
+        clam.common.status.write(statusfile, "Starting Tokeniser",1)
+        os.system('dos2unix ' + inputfile)
+        errout("Starting tokeniser...")
+        if sys.argv[1] == 'clam':
+            os.system(bindir + 'ucto -c ' + bindir + '/../etc/ucto/tokconfig-nl -x ' + id + ' ' + inputfile + ' > ' + outputdir + id + '.xml')
+        else:
+            os.system(bindir + 'ucto -L nl -x ' + id + ' ' + inputfile + ' > ' + outputdir + id + '.xml')
+
+        errout("Tokeniser finished")
+
+    clam.common.status.write(statusfile, "Reading FoLiA document",2)
+
+    #Step 2 - Read FoLiA document
+    doc = folia.Document(file=outputdir + id + '.xml')
+    doc.declare(folia.Correction, 'valkuilset' )
+    doc.declare(folia.ErrorDetection, 'valkuilset' )
+
+    if not standalone and doc.metadatatype == folia.MetaDataType.NATIVE:
+        if 'donate' in clamdata and clamdata['donate']:
+            doc.metadata['donate'] = "yes"
+            errout("Donated")
+        else:
+            doc.metadata['donate'] = "no"
+            errout("Not donated")
+
+    #Presuming that each token will be on one line, make a mapping from lines to IDs
+    idmap = [ w.id for w in doc.words() ]
+
+    ########## Extract data for modules ##############
+
+    clam.common.status.write(statusfile, "Extracting data for modules",3)
+
+
+    f = open(outputdir + 'input.tok.txt','w')
+    for currentword in doc.words():
+        f.write( str(currentword) + ' ')
+    f.close()
+
+    f = open(outputdir + 'agreement_checker.test.inst','w')
+    for prevword3, prevword2, prevword, currentword, nextword, nextword2, nextword3 in Windower(doc.words(),7):
+        f.write( str(prevword3) + ' ' + str(prevword2) + ' ' + str(prevword) + ' ' + str(currentword) + ' ' + str(nextword) + ' ' + str(nextword2) + ' ' + str(nextword3) + ' ' + str(currentword) + '\n')
+    f.close()
+
+
+    ###### BEGIN CALL MODULES (USING PARALLEL POOL) ######
+    # (nothing to edit here)
+
+    errout( "Calling modules")
+    clam.common.status.write(statusfile, "Calling Modules",4)
+
+
+
+    queue = Queue() 
+    threads = 4
+
+    for i in range(threads):  
+        thread = Thread(target=processor,args=[queue])  
+        thread.setDaemon(True)  
+        thread.start()  
+
+    mods = [ Module(doc,rootdir,outputdir,idmap, threshold) for Module in modules ]
+    for module in mods:
+        queue.put(module)
+
+    queue.join()   
+    #all modules done
+
+    #process results and integrate into FoLiA
+    for module in modules:
+        module.process_result()
+
+    ###### END ###### 
+
+    #Store FoLiA document
+    clam.common.status.write(statusfile, "Saving document",99)
+    errout( "Saving document")
+    doc.save()
+
+
+    
+
+
 
 
 try:
@@ -803,15 +885,18 @@ if sys.argv[1] == 'clam':
     if outputdir[-1] != '/':
         outputdir += '/'
     statusfile = sys.argv[6] 
+    
    
-    clamdata = clam.common.data.getclamdata(datafile)    
-    try:
-        inputfile = str(clamdata.inputfile('textinput'))
-    except:
-        inputfile = str(clamdata.inputfile('foliainput'))
-    
+    clamdata = clam.common.data.getclamdata(datafile)
     threshold = float(clamdata['sensitivity'])
-    
+
+    for inputfile in clamdata.getinputfiles('foliainput'):
+        process(str(inputfile), outputdir, rootdir, bindir, statusfile, modules, threshold,standalone)
+    for inputfile in clamdata.getinputfiles('textinput'):
+        process(str(inputfile), outputdir, rootdir, bindir, statusfile, modules, threshold,standalone)        
+        
+    sys.exit(0)
+
 else:
     standalone = True
     try:
@@ -829,103 +914,8 @@ else:
     outputdir = '' #stdout
     statusfile = '/tmp/valkuilstatus'
     
-#detect ID from filename
-if not id:
-    id = os.path.basename(inputfile).split('.',1)[0].replace(' ','_')
+    process(inputfile, outputdir, rootdir, bindir, statusfile, threshold,standalone)
 
-
-
-def errout(msg):
-    print >>sys.stderr,  "[" + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '] PROCESSING-CHAIN: ' + msg
-    
-
-#Step 1 - Tokenize input text (plaintext) and produce FoLiA output 
-
-
-if inputfile[-4:] == '.xml':
-    shutil.copyfile(inputfile, outputdir+id+'.xml')
-else:    
-    clam.common.status.write(statusfile, "Starting Tokeniser",1)
-    os.system('dos2unix ' + inputfile)
-    errout("Starting tokeniser...")
-    if sys.argv[1] == 'clam':
-        os.system(bindir + 'ucto -c ' + bindir + '/../etc/ucto/tokconfig-nl -x ' + id + ' ' + inputfile + ' > ' + outputdir + id + '.xml')
-    else:
-        os.system(bindir + 'ucto -L nl -x ' + id + ' ' + inputfile + ' > ' + outputdir + id + '.xml')
-
-    errout("Tokeniser finished")
-
-clam.common.status.write(statusfile, "Reading FoLiA document",2)
-
-#Step 2 - Read FoLiA document
-doc = folia.Document(file=outputdir + id + '.xml')
-doc.declare(folia.Correction, 'valkuilset' )
-doc.declare(folia.ErrorDetection, 'valkuilset' )
-
-if not standalone and doc.metadatatype == folia.MetaDataType.NATIVE:
-    if 'donate' in clamdata and clamdata['donate']:
-        doc.metadata['donate'] = "yes"
-        errout("Donated")
-    else:
-        doc.metadata['donate'] = "no"
-        errout("Not donated")
-
-#Presuming that each token will be on one line, make a mapping from lines to IDs
-idmap = [ w.id for w in doc.words() ]
-
-########## Extract data for modules ##############
-
-clam.common.status.write(statusfile, "Extracting data for modules",3)
-
-
-f = open(outputdir + 'input.tok.txt','w')
-for currentword in doc.words():
-    f.write( str(currentword) + ' ')
-f.close()
-
-f = open(outputdir + 'agreement_checker.test.inst','w')
-for prevword3, prevword2, prevword, currentword, nextword, nextword2, nextword3 in Windower(doc.words(),7):
-    f.write( str(prevword3) + ' ' + str(prevword2) + ' ' + str(prevword) + ' ' + str(currentword) + ' ' + str(nextword) + ' ' + str(nextword2) + ' ' + str(nextword3) + ' ' + str(currentword) + '\n')
-f.close()
-
-
-###### BEGIN CALL MODULES (USING PARALLEL POOL) ######
-# (nothing to edit here)
-
-errout( "Calling modules")
-clam.common.status.write(statusfile, "Calling Modules",4)
-
-def processor():
-    while True:
-        job = queue.get() 
-        job.run()
-        queue.task_done()
-
-queue = Queue() 
-threads = 4
-
-for i in range(threads):  
-    thread = Thread(target=processor)  
-    thread.setDaemon(True)  
-    thread.start()  
-
-modules = [ Module(doc,rootdir,outputdir,idmap, threshold) for Module in modules ]
-for module in modules:
-    queue.put(module)
-
-queue.join()   
-#all modules done
-
-#process results and integrate into FoLiA
-for module in modules:
-    module.process_result()
-
-###### END ###### 
-
-#Store FoLiA document
-clam.common.status.write(statusfile, "Saving document",99)
-errout( "Saving document")
-doc.save()
 
 clam.common.status.write(statusfile, "All done",100)
 errout("All done!")

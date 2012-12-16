@@ -279,7 +279,8 @@ def ignore(request, id):
         annotator = hashlib.md5(request.META['REMOTE_ADDR']).hexdigest()
         w.append( folia.ErrorDetection(foliadoc, cls="noerror", annotator=annotator, annotatortype=folia.AnnotatorType.MANUAL ))        
         foliadoc.save()
-        os.unlink(settings.DOCDIR + id + '.xml.lock')
+        if os.path.exists(settings.DOCDIR + id + '.xml.lock'):
+            os.unlink(settings.DOCDIR + id + '.xml.lock')
         return HttpResponse("OK", mimetype="text/plain")
     else:
         return HttpResponseNotFound("No such document")
@@ -336,15 +337,13 @@ def correct(request, id):
         if w.incorrection() and new.strip().find(' ') == -1: #merge
             c = w.incorrection()
             c.datetime = datetime.datetime.now()
-            s = w.sentence()
-            
+            s = w.sentence()            
             s.mergewords( folia.Word(foliadoc, generate_id_in=s, text=new), *c.current(), reuse=reuse, datetime=datetime.datetime.now()  )
             changed = True                                
         elif new.strip() == '': #deletion
             s.deleteword(w)
             changed = True
-        elif new.strip().find(' ') != -1: #split
-            
+        elif new.strip().find(' ') != -1: #split            
             s = w.sentence()
             newwords = []
             for newword in new.strip().split(' '):
@@ -370,7 +369,8 @@ def correct(request, id):
         if changed:
             foliadoc.save()
         
-        os.unlink(settings.DOCDIR + id + '.xml.lock')
+        if os.path.exists(settings.DOCDIR + id + '.xml.lock'): #should always exist
+            os.unlink(settings.DOCDIR + id + '.xml.lock')
         
         return HttpResponse("OK", mimetype="text/plain")
     else:

@@ -122,25 +122,27 @@ PROFILES = [
             StaticParameter(id='encoding',name='Encoding',description='The character encoding of the file', value='utf-8'),  
             CharEncodingConverter(id='latin1',label='Convert from Latin-1',charset='iso-8859-1'),
             PDFtoTextConverter(id='pdfconv',label='Convert from PDF Document'),
-            MSWordConverter(id='docconv',label='Convert from MS Word Document'),            
+            MSWordConverter(id='docconv',label='Convert from MS Word Document'),
+            acceptarchive=True,            
             extension='.txt',
-            unique=True
+            multi=True
         ),
         #------------------------------------------------------------------------------------------------------------------------
         OutputTemplate('foliaoutput',FoLiAXMLFormat,'FoLiA Document with spelling suggestions',
             filename='$INPUTSTRIPPEDFILENAME.xml',
-            unique=True
+            multi=True
         ),
     ),
     Profile(
         InputTemplate('foliainput', FoLiAXMLFormat,"FoLiA Document (tokenised)",  
             extension='.xml',
-            unique=True
+            acceptarchive=True,
+            multi=True
         ),
         #------------------------------------------------------------------------------------------------------------------------
         OutputTemplate('foliaoutput',FoLiAXMLFormat,'FoLiA Document with spelling suggestions',
             filename='$INPUTSTRIPPEDFILENAME.xml',
-            unique=True
+            multi=True
         ),
     ) 
 ]
