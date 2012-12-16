@@ -53,4 +53,4 @@ wiki_checker: wiki_checker.o $(OBJ)
 .PHONY: clean
 
 clean:
-	rm -f $(ODIR)/*.o *~ core $(INCDIR)/*~ confusible_checker d-dt_checker d-t_checker tte-tten_checker t_checker lexicon_checker split_checker runon_checker wopr_checker garbage_checker soundalike_checker errorlist_checker wiki_checker
+	rm -f *.o core confusible_checker d-dt_checker d-t_checker tte-tten_checker t_checker lexicon_checker split_checker runon_checker wopr_checker garbage_checker soundalike_checker errorlist_checker wiki_checker
