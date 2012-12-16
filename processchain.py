@@ -890,9 +890,9 @@ if sys.argv[1] == 'clam':
     clamdata = clam.common.data.getclamdata(datafile)
     threshold = float(clamdata['sensitivity'])
 
-    for inputfile in clamdata.getinputfiles('foliainput'):
+    for inputfile in clamdata.inputfiles('foliainput'):
         process(str(inputfile), outputdir, rootdir, bindir, statusfile, modules, threshold,standalone)
-    for inputfile in clamdata.getinputfiles('textinput'):
+    for inputfile in clamdata.inputfiles('textinput'):
         process(str(inputfile), outputdir, rootdir, bindir, statusfile, modules, threshold,standalone)        
         
     sys.exit(0)
