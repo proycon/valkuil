@@ -25,12 +25,13 @@ int main(int argc, char *argv[])
   char classifyline[32768];
   char word[1024];
   char word2[1024];
+  char locap[1024];
   char line[32768];
   char buff[32768];
   char feats[NRFEAT][1024];
   char ***exceptions;
   char *part;
-  char inflection,exception;
+  char inflection,exception,locapmatch;
 
   // read exceptions
 
@@ -91,12 +92,20 @@ int main(int argc, char *argv[])
 
 	  fprintf(stdout,"%s",
 		  word);
-
+	  
+	  strcpy(locap,"");
 	  withletters=0;
 	  for (i=0; i<strlen(word); i++)
-	    if (((word[i]>='A')&&(word[i]<='Z'))||
-		((word[i]>='a')&&(word[i]<='z')))
-	      withletters++;
+	    {
+	      strcat(locap," ");
+	      if ((word[i]>='A')&&(word[i]<='Z'))
+		locap[i]=word[i]+32;
+	      else
+		locap[i]=word[i];
+	      if (((word[i]>='A')&&(word[i]<='Z'))||
+		  ((word[i]>='a')&&(word[i]<='z')))
+		withletters++;
+	    }
 
 	  letterratio=(1.*withletters)/(1.*strlen(word));
 
@@ -160,6 +169,11 @@ int main(int argc, char *argv[])
 				word,part);
 			}
 		    }
+		 
+		  // check: locap match?
+		  locapmatch=0;
+		  if (strcmp(part,locap)==0)
+		    locapmatch=1;
 
 		  // check: plural?
 		  inflection=0;
@@ -182,7 +196,8 @@ int main(int argc, char *argv[])
 			inflection=1;
 		    }
 		  if ((!inflection)&&
-		      (!exception))
+		      (!exception)&&
+		      (!locapmatch))
 		    {
 		      fprintf(stdout," %s",
 			      part);
