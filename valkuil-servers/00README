@@ -6,7 +6,7 @@ in antalb@applejack:/scratch2/www/webservices-lst/live/repo/valkuil/valkuil-serv
 
 % timblserver --config=confusibles.conf &
 
-% wopr -r server_sc -p ibasefile:ValkuilCorpus.1.1.tok.1Mlines.txt.l3r3_-a1+D.ibase,timbl:"-a1 +D",lexicon:ValkuilCorpus.1.1.tok.1Mlines.txt.lex,port:2001,keep:1,mwl:5,max_distr:250,min_ratio:100 &
+% wopr -r server_sc -p ibasefile:ValkuilCorpus.1.1.tok.1Mlines.txt.l3r3_-a1+D.ibase,timbl:"-a1 +D",lexicon:ValkuilCorpus.1.1.tok.1Mlines.txt.lex,port:2001,keep:1,mwl:5,max_distr:250 &
 
 timblserver runs on port 2000; wopr runs on port 2001.
 

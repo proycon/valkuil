@@ -493,7 +493,7 @@ class DEZE_DIT_Checker(AbstractModule):
                 
     
 class DIE_WELKE_Checker(AbstractModule):
-    NAME = "deze_dit_checker"
+    NAME = "die_welke_checker"
 
     def process_result(self):
         if self.done:
