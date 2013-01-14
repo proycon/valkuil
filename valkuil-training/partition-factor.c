@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
   fclose(doel);
   fclose(bron);
   
-  system("nice sort -n effe -o effe\n");
+  system("sort -n effe -o effe\n");
   system("cut -d\" \" -f2- effe > effe2\n");
   system("rm effe\n");
 
