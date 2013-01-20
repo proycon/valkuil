@@ -226,7 +226,7 @@ int main(int argc, char *argv[])
       fprintf(stdout,"%s",
 	      word);
       
-      if ((nrclosest>0)
+      if ((nrclosest>0)&&
 	  (wordlen>=MINLENGTH))
 	{
 	  for (i=0; i<nrclosest; i++)
