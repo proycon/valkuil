@@ -914,7 +914,7 @@ else:
     outputdir = '' #stdout
     statusfile = '/tmp/valkuilstatus'
     
-    process(inputfile, outputdir, rootdir, bindir, statusfile, threshold,standalone)
+    process(inputfile, outputdir, rootdir, bindir, statusfile, modules,  threshold,standalone)
 
 
 clam.common.status.write(statusfile, "All done",100)
