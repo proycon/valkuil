@@ -6,7 +6,7 @@ OBJ = sockhelp.o
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-all: confusible_checker d-dt_checker t-dt_checker d-t_checker tte-tten_checker t_checker lexicon_checker split_checker runon_checker wopr_checker garbage_checker soundalike_checker errorlist_checker wiki_checker
+all: confusible_checker d-dt_checker t-dt_checker d-t_checker tte-tten_checker t_checker lexicon_checker split_checker runon_checker wopr_checker garbage_checker soundalike_checker errorlist_checker wiki_checker aspell_checker
 
 confusible_checker: confusible_checker.o $(OBJ)
 	gcc -o $@ $^ $(CFLAGS)
@@ -50,7 +50,10 @@ errorlist_checker: errorlist_checker.o $(OBJ)
 wiki_checker: wiki_checker.o $(OBJ)
 	gcc -o $@ $^ $(CFLAGS)
 
+aspell_checker: aspell_checker.o $(OBJ)
+	gcc -o $@ $^ $(CFLAGS)
+
 .PHONY: clean
 
 clean:
-	rm -f *.o core confusible_checker d-dt_checker d-t_checker tte-tten_checker t_checker lexicon_checker split_checker runon_checker wopr_checker garbage_checker soundalike_checker errorlist_checker wiki_checker
+	rm -f *.o core confusible_checker d-dt_checker d-t_checker tte-tten_checker t_checker lexicon_checker split_checker runon_checker wopr_checker garbage_checker soundalike_checker errorlist_checker wiki_checker aspell_checker
