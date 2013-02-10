@@ -11,8 +11,7 @@
 #include<string.h>
 #include<ctype.h>
 
-#define MAXLD 2
-#define MEDLD 1
+#define MAXLD 1 // be conservative...
 #define LDTHRESHOLD 7
 #define FREQFACTOR 10000
 #define MINLENGTH 5
