@@ -11,8 +11,7 @@
 #include<string.h>
 #include<ctype.h>
 
-#define MAXLD 2
-#define MEDLD 1
+#define MAXLD 1 // be conservative...
 #define LDTHRESHOLD 7
 #define FREQFACTOR 10000
 #define MINLENGTH 5
@@ -41,7 +40,7 @@ int main(int argc, char *argv[])
   unsigned long thishash;
   int  i,j,k,l,thislev,nrlex=0,nrclosest=0,nraspell,readnr,wordlen,lexlen;
   FILE *context;
-  char inlex,cap,inflection,tokstatus;
+  char inlex,cap,hyp,inflection,tokstatus;
   char aspellline[32768];
   char memline[32768];
   char *part;
@@ -225,9 +224,23 @@ int main(int argc, char *argv[])
 
       fprintf(stdout,"%s",
 	      word);
+
+      // post-filter (too bad for all the work done before):
+      // don't correct capitalized words, don't correct words with
+      // hyphens
+
+      cap=0;
+      if ((word[0]>='A')&&
+	  (word[0]<='Z'))
+	cap=1;
+      hyp=0;
+      if (strstr(word,"-"))
+	hyp=1;
       
       if ((nrclosest>0)&&
-	  (wordlen>=MINLENGTH))
+	  (wordlen>=MINLENGTH)&&
+	  (!cap)&&
+	  (!hyp))
 	{
 	  for (i=0; i<nrclosest; i++)
 	    fprintf(stdout," %s",
