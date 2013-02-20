@@ -16,23 +16,25 @@ try:
     inputdir = sys.argv[1]
     refdir = sys.argv[2]
     workdir = sys.argv[3]
+    username = sys.argv[4]
+    password = sys.argv[5]
 except:
-    print >>sys.stderr,"Usage: valkuilvalidation.py inputdir refdir workdir [SCORE-ONLY=0|1]"
+    print >>sys.stderr,"Usage: valkuilvalidation.py inputdir refdir workdir username password [SCORE-ONLY=0|1]"
     sys.exit(2)
     
 try:
-    scoreonly = (sys.argv[4] == '1')
+    scoreonly = (sys.argv[6] == '1')
 except:
     scoreonly = False
 
-url = 'http://webservices.ticc.uvt.nl/valkuil/'
+url = 'http://webservices-lst.science.ru.nl/valkuil/'
 sensitivity=0.85
 
 
 print "Connecting to server..."
 #create client, connect to server, url is the full URL to the base of your webservice.
 if not scoreonly:
-    clamclient = clam.common.client.CLAMClient(url)
+    clamclient = clam.common.client.CLAMClient(url, username, password)
 
 
 fsummary = open(workdir + '/overview.score','w')
