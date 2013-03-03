@@ -102,8 +102,7 @@ int main(int argc, char *argv[])
 		locap[i]=word[i]+32;
 	      else
 		locap[i]=word[i];
-	      if (((word[i]>='A')&&(word[i]<='Z'))||
-		  ((word[i]>='a')&&(word[i]<='z')))
+	      if ((locap[i]>='a')&&(locap[i]<='z'))
 		withletters++;
 	    }
 
