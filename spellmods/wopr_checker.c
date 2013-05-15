@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
   char word[1024];
   char word2[1024];
   char locap[1024];
+  char partlocap[1024];
   char line[32768];
   char buff[32768];
   char feats[NRFEAT][1024];
@@ -171,7 +172,18 @@ int main(int argc, char *argv[])
 		 
 		  // check: locap match?
 		  locapmatch=0;
-		  if (strcmp(part,locap)==0)
+
+		  strcpy(partlocap,"");
+		  for (i=0; i<strlen(part); i++)
+		    {
+		      strcat(partlocap," ");
+		      if ((part[i]>='A')&&(part[i]<='Z'))
+			partlocap[i]=part[i]+32;
+		      else
+			partlocap[i]=part[i];
+		    }
+
+		  if (strcmp(partlocap,locap)==0)
 		    locapmatch=1;
 
 		  // check: plural?
@@ -196,7 +208,8 @@ int main(int argc, char *argv[])
 		    }
 		  if ((!inflection)&&
 		      (!exception)&&
-		      (!locapmatch))
+		      (!locapmatch)&&
+		      (strlen(part)>MINLEN))
 		    {
 		      fprintf(stdout," %s",
 			      part);
