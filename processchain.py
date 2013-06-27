@@ -839,7 +839,7 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
 
     f = io.open(outputdir + 'agreement_checker.test.inst','w', encoding='utf-8')
     for prevword3, prevword2, prevword, currentword, nextword, nextword2, nextword3 in Windower(doc.words(),7):
-        f.write( prevword3 + ' ' + prevword2 + ' ' + prevword + ' ' + currentword + ' ' + nextword + ' ' + nextword2 + ' ' + nextword3 + ' ' + currentword + '\n')
+        f.write( unicode(prevword3) + ' ' + unicode(prevword2) + ' ' + unicode(prevword) + ' ' + unicode(currentword) + ' ' + unicode(nextword) + ' ' + unicode(nextword2) + ' ' + unicode(nextword3) + ' ' + unicode(currentword) + '\n')
     f.close()
 
 
