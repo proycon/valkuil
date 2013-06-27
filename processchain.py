@@ -170,7 +170,7 @@ class ErrorListModule(AbstractModule):
         #Extract data for module
         f = io.open(self.outputdir + 'errorlist_comparison.test.inst','w',encoding='utf-8')
         for currentword in self.doc.words():
-            f.write( currentword.text() + ' ')
+            f.write( unicode(currentword) + ' ')
         f.close()
 
         #Call module and ask it to produce output
@@ -834,7 +834,7 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
 
     f = io.open(outputdir + 'input.tok.txt','w',encoding='utf-8')
     for currentword in doc.words():
-        f.write( currentword.text() + ' ')
+        f.write( unicode(currentword) + ' ')
     f.close()
 
     f = io.open(outputdir + 'agreement_checker.test.inst','w', encoding='utf-8')
