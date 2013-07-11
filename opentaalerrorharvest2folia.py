@@ -101,7 +101,10 @@ with codecs.open(inputfile,'r','utf-8','ignore') as f:
                         if pos:
                             word.append(folia.PosAnnotation, cls=pos)
                         if wordtext in corrections and not stripcorrections:
-                            word.correct(new=corrections[wordtext])
+                            try:
+                                word.correct(new=corrections[wordtext])
+                            except ValueError as e:
+                                print >>sys.stderr, "Error correcting, ignoring:", e
                             correctioncount += 1
                             print >>sys.stderr, "Succesfully added a correction (" + str(correctioncount) + ")"
 
