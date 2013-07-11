@@ -91,7 +91,7 @@ with codecs.open(inputfile,'r','utf-8','ignore') as f:
                 paragraph = folia.Paragraph(doc, id=sample_id)
                 sentence = paragraph.append(folia.Sentence)
                 for j, (wordtext, lemma, morph, pos) in enumerate(frogclient.process(text)):
-                    if not wordtext.strip():
+                    if not wordtest or not wordtext.strip():
                         print >>sys.stderr,"Empty word, moving to next sentence"
                         sentence = paragraph.append(folia.Sentence)
                     else:
