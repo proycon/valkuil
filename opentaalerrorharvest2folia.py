@@ -27,15 +27,15 @@ frogclient = FrogClient('localhost', frogport)
 correctioncount = 0
 
 with codecs.open(inputfile,'r','utf-8','ignore') as f:
-    for i, line in enumerate(f):        
-        print >>sys.stderr,"@" + str(i),  
-        if i % 1000 == 0:            
+    for i, line in enumerate(f):
+        print >>sys.stderr,"@" + str(i),
+        if i % 1000 == 0:
             if doc:
                 doc.save(outputfile)
                 print >>sys.stderr,"Saved " + outputfile
             docnum += 1
             outputfile = outputdir + '/opentaalerrorharvest' + str(docnum) + '.xml'
-            doc = folia.Document(id='opentaalerrorharvest' + str(docnum))                        
+            doc = folia.Document(id='opentaalerrorharvest' + str(docnum))
             doc.declare(folia.AnnotationType.TOKEN, set='http://ilk.uvt.nl/folia/sets/ucto-nl.foliaset', annotator='Frog',annotatortype=folia.AnnotatorType.AUTO)
             doc.declare(folia.AnnotationType.POS, set='http://ilk.uvt.nl/folia/sets/cgn-legacy.foliaset', annotator='Frog',annotatortype=folia.AnnotatorType.AUTO)
             doc.declare(folia.AnnotationType.LEMMA, set='http://ilk.uvt.nl/folia/sets/mblem-nl.foliaset', annotator='Frog',annotatortype=folia.AnnotatorType.AUTO)
@@ -43,20 +43,20 @@ with codecs.open(inputfile,'r','utf-8','ignore') as f:
                 doc.declare(folia.AnnotationType.CORRECTION, set='opentaal', annotator='unknown',annotatortype= folia.AnnotatorType.MANUAL)
             textbody = doc.append(folia.Text) #, id='opentaalerrorharvest' + str(docnum) + '.text')
 
-        line = line.strip()            
-        if line:            
+        line = line.strip()
+        if line:
             sample_id = None
             corrections = {} #original -> new
             in_correction = 0
             skipsample = False
-            
+
             #get natural text string and extract corrections
-            text = ""        
-            for j, c in enumerate(line):                
+            text = ""
+            for j, c in enumerate(line):
                 if c == '|':
                     if not sample_id:
                         sample_id = 'OPENTAAL-s' + line[:j]
-                        print >>sys.stderr, sample_id 
+                        print >>sys.stderr, sample_id
                     if in_correction:
                         correction_sep = j
                 elif c == '~' and sample_id:
@@ -66,10 +66,10 @@ with codecs.open(inputfile,'r','utf-8','ignore') as f:
                             skipsample = True
                             break
                         elif ' ' in line[in_correction:correction_sep] or ' ' in  line[correction_sep+1:j]:
-                            print >>sys.stderr,"WARNING: Can not deal splits and merges (\"" + line[in_correction:correction_sep] + "\" -> \"" +  line[correction_sep+1:j] + "\" ) . This correction will be omitted"                            
-                        else:                            
-                            print >>sys.stderr,"Found correction (\"" + line[in_correction:correction_sep] + "\" -> \"" +  line[correction_sep+1:j] + "\" )"                    
-                            corrections[line[in_correction:correction_sep]] = line[correction_sep+1:j]                        
+                            print >>sys.stderr,"WARNING: Can not deal splits and merges (\"" + line[in_correction:correction_sep] + "\" -> \"" +  line[correction_sep+1:j] + "\" ) . This correction will be omitted"
+                        else:
+                            print >>sys.stderr,"Found correction (\"" + line[in_correction:correction_sep] + "\" -> \"" +  line[correction_sep+1:j] + "\" )"
+                            corrections[line[in_correction:correction_sep]] = line[correction_sep+1:j]
                         text += line[in_correction:correction_sep]
                         in_correction = 0
                         correction_sep = 0
@@ -77,40 +77,40 @@ with codecs.open(inputfile,'r','utf-8','ignore') as f:
                         in_correction = j+1
                 elif not in_correction and sample_id:
                     text += c
-            
+
             if "\\" in text:
                 print >>sys.stderr,"WARNING: backslash in text, skipping sample to prevent Frog bug."
                 continue
-            
+
             if skipsample:
                 continue
-    
-            
+
+
             if text and corrections and sample_id:
                 print >>sys.stderr,"Invoking Frog and processing text: " + text
                 paragraph = folia.Paragraph(doc, id=sample_id)
                 sentence = paragraph.append(folia.Sentence)
                 for j, (wordtext, lemma, morph, pos) in enumerate(frogclient.process(text)):
-                    if not wordtext:
-                        print >>sys.stderr,"Moving to next sentence"
+                    if not wordtext.strip():
+                        print >>sys.stderr,"Empty word, moving to next sentence"
                         sentence = paragraph.append(folia.Sentence)
                     else:
                         word = sentence.append(folia.Word, text=wordtext)
-                        if lemma: 
+                        if lemma:
                             word.append(folia.LemmaAnnotation, cls=lemma)
-                        if pos: 
+                        if pos:
                             word.append(folia.PosAnnotation, cls=pos)
-                        if wordtext in corrections and not stripcorrections:                            
+                        if wordtext in corrections and not stripcorrections:
                             word.correct(new=corrections[wordtext])
                             correctioncount += 1
                             print >>sys.stderr, "Succesfully added a correction (" + str(correctioncount) + ")"
-                            
+
                 textbody.append(paragraph)
-                
+
 if doc:
     doc.save(outputfile)
-    print >>sys.stderr,"Saved " + outputfile            
+    print >>sys.stderr,"Saved " + outputfile
 
-            
-            
-        
+
+
+
