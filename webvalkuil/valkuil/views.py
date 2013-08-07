@@ -153,7 +153,7 @@ def viewer(request, id):
                 error['multispan'] = [ w.id for w in incorrection.current()[1:] ]
 
                 error['errnum'] = len(errors)
-                error['text'] = str(word)
+                error['text'] = unicode(word)
                 error['occ'] = 1 #number of occurences
                 errors.append(error)
             else:
@@ -204,7 +204,7 @@ def viewer(request, id):
                     error['tokencorrection'] = False;
                     error['multispan'] = [];
                     error['errnum'] = len(errors)
-                    error['text'] = str(word)
+                    error['text'] = unicode(word)
                     error['occ'] = 1 #number of occurences
                     errors.append(error)
 
