@@ -440,7 +440,7 @@ class JOU_JOUW_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker jou jouw ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'jou-jouw_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error jou jouw ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'jou-jouw_checker.test.out')
 
 
 
@@ -789,9 +789,9 @@ class KAN_KEN_Checker(AbstractModule):
 
 #Add all desired modules classes here here:
 
-modules = [WOPRChecker, ErrorListModule, LexiconModule, AspellModule, SoundAlikeModule, SplitChecker, RunonChecker, D_DT_Checker, T_DT_Checker, ZEI_ZIJ_Checker, NOG_NOCH_Checker, HARD_HART_Checker, LICHT_LIGT_Checker, GROOTTE_GROTE_Checker, WIL_WILT_Checker, DEZE_DIT_Checker, DE_HET_Checker, ALS_DAN_Checker, HEN_HUN_Checker, U_UW_Checker]
+modules = [WOPRChecker, ErrorListModule, LexiconModule, AspellModule, SoundAlikeModule, SplitChecker, RunonChecker, D_DT_Checker, T_DT_Checker, ZEI_ZIJ_Checker, NOG_NOCH_Checker, HARD_HART_Checker, LICHT_LIGT_Checker, GROOTTE_GROTE_Checker, WIL_WILT_Checker, DEZE_DIT_Checker, DE_HET_Checker, ALS_DAN_Checker, HEN_HUN_Checker, U_UW_Checker, JOU_JOUW_Checker]
 
-# disabled for now: WikiChecker, DIE_WELKE_Checker, T_Checker, TTE_TTEN_Checker, TE_TEN_Checker, D_T_Checker, HUN_ZIJ_Checker, HAAR_ZIJ_Checker, HOOGTE_HOOGTEN_Checker, MIJ_IK_Checker, KAN_KEN_Checker, GarbageChecker, BEIDE_BEIDEN_Checker, JOU_JOUW_Checker, EENS_IS_Checker
+# disabled for now: WikiChecker, DIE_WELKE_Checker, T_Checker, TTE_TTEN_Checker, TE_TEN_Checker, D_T_Checker, HUN_ZIJ_Checker, HAAR_ZIJ_Checker, HOOGTE_HOOGTEN_Checker, MIJ_IK_Checker, KAN_KEN_Checker, GarbageChecker, BEIDE_BEIDEN_Checker, EENS_IS_Checker
 
 ################################################################################
 
