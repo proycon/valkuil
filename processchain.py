@@ -444,6 +444,24 @@ class JOU_JOUW_Checker(AbstractModule):
 
 
 
+class U_UW_Checker(AbstractModule):
+    NAME = "u_uw_checker"
+
+    def process_result(self):
+        if self.done:
+            #Reading module output and integrating in FoLiA document
+            for word, fields in self.readcolumnedoutput(self.outputdir + 'u-uw_checker.test.out'):
+                if len(fields) >= 2:
+                    #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
+                    self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
+
+
+    def run(self):
+        #Call module and ask it to produce output
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error u uw ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'u-uw_checker.test.out')
+
+
+
 class ZEI_ZIJ_Checker(AbstractModule):
     NAME = "zei_zij_checker"
 
@@ -771,7 +789,7 @@ class KAN_KEN_Checker(AbstractModule):
 
 #Add all desired modules classes here here:
 
-modules = [WOPRChecker, ErrorListModule, LexiconModule, AspellModule, SoundAlikeModule, SplitChecker, RunonChecker, D_DT_Checker, T_DT_Checker, ZEI_ZIJ_Checker, NOG_NOCH_Checker, HARD_HART_Checker, LICHT_LIGT_Checker, GROOTTE_GROTE_Checker, WIL_WILT_Checker, DEZE_DIT_Checker, DE_HET_Checker, ALS_DAN_Checker, HEN_HUN_Checker]
+modules = [WOPRChecker, ErrorListModule, LexiconModule, AspellModule, SoundAlikeModule, SplitChecker, RunonChecker, D_DT_Checker, T_DT_Checker, ZEI_ZIJ_Checker, NOG_NOCH_Checker, HARD_HART_Checker, LICHT_LIGT_Checker, GROOTTE_GROTE_Checker, WIL_WILT_Checker, DEZE_DIT_Checker, DE_HET_Checker, ALS_DAN_Checker, HEN_HUN_Checker, U_UW_Checker]
 
 # disabled for now: WikiChecker, DIE_WELKE_Checker, T_Checker, TTE_TTEN_Checker, TE_TEN_Checker, D_T_Checker, HUN_ZIJ_Checker, HAAR_ZIJ_Checker, HOOGTE_HOOGTEN_Checker, MIJ_IK_Checker, KAN_KEN_Checker, GarbageChecker, BEIDE_BEIDEN_Checker, JOU_JOUW_Checker, EENS_IS_Checker
 
