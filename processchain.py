@@ -745,7 +745,7 @@ class GROOTTE_GROTE_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker grootte grote ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'grootte-grote_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error grootte grote ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'grootte-grote_checker.test.out')
 
 
 class HOOGTE_HOOGTEN_Checker(AbstractModule):
