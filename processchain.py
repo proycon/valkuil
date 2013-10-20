@@ -729,7 +729,7 @@ class LICHT_LIGT_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker licht ligt ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'licht-ligt_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error licht ligt ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'licht-ligt_checker.test.out')
 
 
 class GROOTTE_GROTE_Checker(AbstractModule):
