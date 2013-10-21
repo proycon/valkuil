@@ -633,6 +633,23 @@ class MIJ_IK_Checker(AbstractModule):
         #Call module and ask it to produce output
         self.runcmd(self.rootdir + 'spellmods/confusible_checker mij ik ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'mij-ik_checker.test.out')
 
+
+class ME_MIJN_Checker(AbstractModule):
+    NAME = "me_mijn_checker"
+
+    def process_result(self):
+        if self.done:
+            #Reading module output and integrating in FoLiA document
+            for word, fields in self.readcolumnedoutput(self.outputdir + 'me-mijn_checker.test.out'):
+                if len(fields) >= 2:
+                    #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
+                    self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
+
+    def run(self):
+        #Call module and ask it to produce output
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error me mijn ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'me-mijn_checker.test.out')
+
+
 class BEIDE_BEIDEN_Checker(AbstractModule):
     NAME = "beide_beiden_checker"
 
