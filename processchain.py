@@ -510,7 +510,23 @@ class WIL_WILT_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker wil wilt 0.975 ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'wil-wilt_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker wil wilt ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'wil-wilt_checker.test.out')
+
+
+class WORD_WORDT_Checker(AbstractModule):
+    NAME = "word_wordt_checker"
+
+    def process_result(self):
+        if self.done:
+            #Reading module output and integrating in FoLiA document
+            for word, fields in self.readcolumnedoutput(self.outputdir + 'word-wordt_checker.test.out'):
+                if len(fields) >= 2:
+                    #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
+                    self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
+
+    def run(self):
+        #Call module and ask it to produce output
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error word wordt ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'word-wordt_checker.test.out')
 
 
 class DEZE_DIT_Checker(AbstractModule):
@@ -524,10 +540,9 @@ class DEZE_DIT_Checker(AbstractModule):
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
 
-
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker deze dit 0.975 ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'deze-dit_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker deze dit ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'deze-dit_checker.test.out')
 
 
 class DIE_WELKE_Checker(AbstractModule):
