@@ -440,7 +440,25 @@ class JOU_JOUW_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker jou jouw ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'jou-jouw_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error jou jouw ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'jou-jouw_checker.test.out')
+
+
+
+class U_UW_Checker(AbstractModule):
+    NAME = "u_uw_checker"
+
+    def process_result(self):
+        if self.done:
+            #Reading module output and integrating in FoLiA document
+            for word, fields in self.readcolumnedoutput(self.outputdir + 'u-uw_checker.test.out'):
+                if len(fields) >= 2:
+                    #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
+                    self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
+
+
+    def run(self):
+        #Call module and ask it to produce output
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error u uw ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'u-uw_checker.test.out')
 
 
 
@@ -459,7 +477,7 @@ class ZEI_ZIJ_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker zei zij ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'zei-zij_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error zei zij ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'zei-zij_checker.test.out')
 
 
 class HAAR_ZIJ_Checker(AbstractModule):
@@ -492,7 +510,23 @@ class WIL_WILT_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker wil wilt 0.975 ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'wil-wilt_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker wil wilt ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'wil-wilt_checker.test.out')
+
+
+class WORD_WORDT_Checker(AbstractModule):
+    NAME = "word_wordt_checker"
+
+    def process_result(self):
+        if self.done:
+            #Reading module output and integrating in FoLiA document
+            for word, fields in self.readcolumnedoutput(self.outputdir + 'word-wordt_checker.test.out'):
+                if len(fields) >= 2:
+                    #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
+                    self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
+
+    def run(self):
+        #Call module and ask it to produce output
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error word wordt ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'word-wordt_checker.test.out')
 
 
 class DEZE_DIT_Checker(AbstractModule):
@@ -506,10 +540,9 @@ class DEZE_DIT_Checker(AbstractModule):
                     #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
                     self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
 
-
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker deze dit 0.975 ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'deze-dit_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker deze dit ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'deze-dit_checker.test.out')
 
 
 class DIE_WELKE_Checker(AbstractModule):
@@ -544,7 +577,7 @@ class HEN_HUN_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker hen hun ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'hen-hun_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error hen hun ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'hen-hun_checker.test.out')
 
 
 class DE_HET_Checker(AbstractModule):
@@ -580,7 +613,7 @@ class HUN_ZIJ_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker hun zij ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'hun-zij_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error hun zij ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'hun-zij_checker.test.out')
 
 
 
@@ -599,6 +632,23 @@ class MIJ_IK_Checker(AbstractModule):
     def run(self):
         #Call module and ask it to produce output
         self.runcmd(self.rootdir + 'spellmods/confusible_checker mij ik ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'mij-ik_checker.test.out')
+
+
+class ME_MIJN_Checker(AbstractModule):
+    NAME = "me_mijn_checker"
+
+    def process_result(self):
+        if self.done:
+            #Reading module output and integrating in FoLiA document
+            for word, fields in self.readcolumnedoutput(self.outputdir + 'me-mijn_checker.test.out'):
+                if len(fields) >= 2:
+                    #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
+                    self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='bekende-verwarring', annotator=self.NAME)
+
+    def run(self):
+        #Call module and ask it to produce output
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error me mijn ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'me-mijn_checker.test.out')
+
 
 class BEIDE_BEIDEN_Checker(AbstractModule):
     NAME = "beide_beiden_checker"
@@ -631,7 +681,7 @@ class NOG_NOCH_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker nog noch ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'nog-noch_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error nog noch ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'nog-noch_checker.test.out')
 
 
 class HARD_HART_Checker(AbstractModule):
@@ -663,7 +713,7 @@ class ALS_DAN_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker als dan ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'als-dan_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error als dan ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'als-dan_checker.test.out')
 
 
 class TE_TEN_Checker(AbstractModule):
@@ -711,7 +761,7 @@ class LICHT_LIGT_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker licht ligt ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'licht-ligt_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error licht ligt ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'licht-ligt_checker.test.out')
 
 
 class GROOTTE_GROTE_Checker(AbstractModule):
@@ -727,7 +777,7 @@ class GROOTTE_GROTE_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker grootte grote ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'grootte-grote_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error grootte grote ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'grootte-grote_checker.test.out')
 
 
 class HOOGTE_HOOGTEN_Checker(AbstractModule):
@@ -760,7 +810,7 @@ class KAN_KEN_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker kan ken ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'kan-ken_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker_error kan ken ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'kan-ken_checker.test.out')
 
 
 
@@ -771,9 +821,9 @@ class KAN_KEN_Checker(AbstractModule):
 
 #Add all desired modules classes here here:
 
-modules = [WOPRChecker, ErrorListModule, LexiconModule, AspellModule, SoundAlikeModule, SplitChecker, RunonChecker, D_DT_Checker, T_DT_Checker, ZEI_ZIJ_Checker, NOG_NOCH_Checker, HARD_HART_Checker, LICHT_LIGT_Checker, GROOTTE_GROTE_Checker, WIL_WILT_Checker, DEZE_DIT_Checker, DE_HET_Checker]
+modules = [WOPRChecker, ErrorListModule, LexiconModule, AspellModule, SoundAlikeModule, SplitChecker, RunonChecker, D_DT_Checker, T_DT_Checker, ZEI_ZIJ_Checker, NOG_NOCH_Checker, HARD_HART_Checker, LICHT_LIGT_Checker, GROOTTE_GROTE_Checker, WIL_WILT_Checker, DEZE_DIT_Checker, DE_HET_Checker, ALS_DAN_Checker, HEN_HUN_Checker, U_UW_Checker, JOU_JOUW_Checker, KAN_KEN_Checker]
 
-# disabled for now: WikiChecker, DIE_WELKE_Checker, T_Checker, TTE_TTEN_Checker, TE_TEN_Checker, D_T_Checker, HUN_ZIJ_Checker, HAAR_ZIJ_Checker, HOOGTE_HOOGTEN_Checker, MIJ_IK_Checker, ALS_DAN_Checker, KAN_KEN_Checker, GarbageChecker, HEN_HUN_Checker, BEIDE_BEIDEN_Checker, JOU_JOUW_Checker, EENS_IS_Checker
+# disabled for now: WikiChecker, DIE_WELKE_Checker, T_Checker, TTE_TTEN_Checker, TE_TEN_Checker, D_T_Checker, HUN_ZIJ_Checker, HAAR_ZIJ_Checker, HOOGTE_HOOGTEN_Checker, MIJ_IK_Checker, GarbageChecker, BEIDE_BEIDEN_Checker, EENS_IS_Checker
 
 ################################################################################
 
