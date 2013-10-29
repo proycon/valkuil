@@ -88,7 +88,8 @@ int main(int argc, char *argv[])
   aspell=fopen("input.tok.aspell","r");
   fgets(aspellline,32768,aspell);
 
-  while (!feof(context))
+  while ((!feof(context))&&
+	 (!feof(aspell)))
     {
       fscanf(context,"%s ",word);
 
@@ -107,121 +108,127 @@ int main(int argc, char *argv[])
       if (strstr(word,"@"))
 	tokstatus=0;
 
-      if (tokstatus)
+      if ((tokstatus)&&
+	  (!feof(aspell)))
 	{
 
 	  fgets(aspellline,32768,aspell);
-	  strcpy(memline,aspellline);
-	  part=strtok(aspellline," \n");
-
-	  if (strcmp(part,"&")==0)
+	  if (!feof(aspell))
 	    {
-	      // read alternatives from aspellline 
-
-	      part=strtok(NULL," \n");
-
-	      if (strcmp(part,word)==0)
+	      strcpy(memline,aspellline);
+	      part=strtok(aspellline," \n");
+	      if (part!=NULL)
 		{
-		  part=strtok(NULL," \n");
-		  sscanf(part,"%d",&nraspell);
-		  
-		  if (DEBUG2)
-		    fprintf(stderr,"[%s] [%d options]\n",
-			    word,nraspell);
-		  
-		  inlex=0;
-		  thishash=sdbm(word);
-		  for (k=0; ((k<nrlex)&&(!inlex)); k++)
+		  if (strcmp(part,"&")==0)
 		    {
-		      if (thishash==hash[k])
-			{
-			  inlex=1;
-			  if (DEBUG2)
-			    fprintf(stderr,"word [%s] in lexicon, with frequency %ld\n",
-				    word,freqs[k]);
-			}
-		    }
-
-		  // read extra string (offset)
-		  part=strtok(NULL," \n");
-
-		  for (k=0; k<nraspell; k++)
-		    {
-		      part=strtok(NULL," \n");
-		      strcpy(aspellword,"");
-		      for (l=0; l<strlen(part)-1; l++)
-			{
-			  strcat(aspellword," ");
-			  aspellword[l]=part[l];
-			}
-
-		      if (!strstr(aspellword,"-"))
-			{
-			  lexlen=strlen(aspellword);
-			  if ((lexlen>wordlen+MAXLD)||
-			      (wordlen>lexlen+MAXLD))
-			    thislev=MAXLD+1;
-			  else
-			    thislev=levenshtein(aspellword,word);
-			  
-			  if (thislev<=MAXLD)
-			    {
-			      inflection=0;
-			      // check: plural?
-			      if ((((aspellword[strlen(aspellword)-1]=='s')&&
-				    (word[strlen(word)-1]!='s')))||
-				  (((aspellword[strlen(aspellword)-1]!='s')&&
-				    (word[strlen(word)-1]=='s'))))
-				inflection=1;
-			      if ((((aspellword[strlen(aspellword)-1]=='e')&&
-				    (word[strlen(word)-1]!='e')))||
-				  (((aspellword[strlen(aspellword)-1]!='e')&&
-				    (word[strlen(word)-1]=='e'))))
-				inflection=1;
-			      if ((((aspellword[strlen(aspellword)-1]=='n')&&
-				    (word[strlen(word)-1]=='t')))||
-				  (((aspellword[strlen(aspellword)-1]=='t')&&
-				    (word[strlen(word)-1]=='n'))))
-				inflection=1;
-			      if (!inflection)
-				{
-				  j=0;
-				  while ((j<nrclosest)&&
-					 (freqs[k]<closestfreq[j]))
-				    j++;
-				  if (j<nrclosest)
-				    {
-				      // move up
-				      for (l=nrclosest; l>j; l--)
-					{
-					  strcpy(closestword[l],closestword[l-1]);
-					  closest[l]=closest[l-1];
-					  closestfreq[l]=closestfreq[l-1];
-					}
-				    }
-				  // insert
-				  strcpy(closestword[j],aspellword);
-				  closest[j]=thislev;
-				  closestfreq[j]=freqs[k];
-				  if (nrclosest<MAXNRCLOSEST)
-				    nrclosest++;
-				}
-			    }  
-			}
-		    }
-		  if (DEBUG2)
-		    {
-		      fprintf(stderr,"closest to %s:\n",
-			      word);
-		      for (i=0; i<nrclosest; i++)
-			fprintf(stderr," %2d %s\n",
-				i,closestword[i]);
+		      // read alternatives from aspellline 
 		      
+		      part=strtok(NULL," \n");
+		      
+		      if (strcmp(part,word)==0)
+			{
+			  part=strtok(NULL," \n");
+			  sscanf(part,"%d",&nraspell);
+			  
+			  if (DEBUG2)
+			    fprintf(stderr,"[%s] [%d options]\n",
+				    word,nraspell);
+			  
+			  inlex=0;
+			  thishash=sdbm(word);
+			  for (k=0; ((k<nrlex)&&(!inlex)); k++)
+			    {
+			      if (thishash==hash[k])
+				{
+				  inlex=1;
+				  if (DEBUG2)
+				    fprintf(stderr,"word [%s] in lexicon, with frequency %ld\n",
+					    word,freqs[k]);
+				}
+			    }
+			  
+			  // read extra string (offset)
+			  part=strtok(NULL," \n");
+			  
+			  for (k=0; k<nraspell; k++)
+			    {
+			      part=strtok(NULL," \n");
+			      strcpy(aspellword,"");
+			      for (l=0; l<strlen(part)-1; l++)
+				{
+				  strcat(aspellword," ");
+				  aspellword[l]=part[l];
+				}
+			      
+			      if (!strstr(aspellword,"-"))
+				{
+				  lexlen=strlen(aspellword);
+				  if ((lexlen>wordlen+MAXLD)||
+				      (wordlen>lexlen+MAXLD))
+				    thislev=MAXLD+1;
+				  else
+				    thislev=levenshtein(aspellword,word);
+				  
+				  if (thislev<=MAXLD)
+				    {
+				      inflection=0;
+				      // check: plural?
+				      if ((((aspellword[strlen(aspellword)-1]=='s')&&
+					    (word[strlen(word)-1]!='s')))||
+					  (((aspellword[strlen(aspellword)-1]!='s')&&
+					    (word[strlen(word)-1]=='s'))))
+					inflection=1;
+				      if ((((aspellword[strlen(aspellword)-1]=='e')&&
+					    (word[strlen(word)-1]!='e')))||
+					  (((aspellword[strlen(aspellword)-1]!='e')&&
+					    (word[strlen(word)-1]=='e'))))
+					inflection=1;
+				      if ((((aspellword[strlen(aspellword)-1]=='n')&&
+					    (word[strlen(word)-1]=='t')))||
+					  (((aspellword[strlen(aspellword)-1]=='t')&&
+					    (word[strlen(word)-1]=='n'))))
+					inflection=1;
+				      if (!inflection)
+					{
+					  j=0;
+					  while ((j<nrclosest)&&
+						 (freqs[k]<closestfreq[j]))
+					    j++;
+					  if (j<nrclosest)
+					    {
+					      // move up
+					      for (l=nrclosest; l>j; l--)
+						{
+						  strcpy(closestword[l],closestword[l-1]);
+						  closest[l]=closest[l-1];
+						  closestfreq[l]=closestfreq[l-1];
+						}
+					    }
+					  // insert
+					  strcpy(closestword[j],aspellword);
+					  closest[j]=thislev;
+					  closestfreq[j]=freqs[k];
+					  if (nrclosest<MAXNRCLOSEST)
+					    nrclosest++;
+					}
+				    }  
+				}
+			    }
+			  if (DEBUG2)
+			    {
+			      fprintf(stderr,"closest to %s:\n",
+				      word);
+			      for (i=0; i<nrclosest; i++)
+				fprintf(stderr," %2d %s\n",
+					i,closestword[i]);
+			      
+			    }
+			}
 		    }
 		}
 	    }
 	}
-
+      
       fprintf(stdout,"%s",
 	      word);
 
