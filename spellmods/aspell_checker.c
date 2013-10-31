@@ -77,7 +77,7 @@ int main(int argc, char *argv[])
 	    nrlex);
 
   /* run aspell on input.tok.txt */
-  sprintf(commandline,"aspell --lang=nl --pipe < %s > input.tok.aspell\n",
+  sprintf(commandline,"aspell --encoding=utf-8 --lang=nl --pipe < %s > input.tok.aspell\n",
 	  argv[2]);
   if (DEBUG)
     fprintf(stderr,"executing: %s",
