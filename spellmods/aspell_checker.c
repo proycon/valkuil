@@ -240,13 +240,14 @@ int main(int argc, char *argv[])
       if ((word[0]>='A')&&
 	  (word[0]<='Z'))
 	cap=1;
+
       hyp=0;
       if (strstr(word,"-"))
 	hyp=1;
       
       if ((nrclosest>0)&&
 	  (wordlen>=MINLENGTH)&&
-	  (!cap)&&
+	  // (!cap)&& on second thought, keep the capitalization corrections
 	  (!hyp))
 	{
 	  for (i=0; i<nrclosest; i++)
