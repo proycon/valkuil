@@ -144,8 +144,9 @@ int main(int argc, char *argv[])
 	      strcpy(classifyline,"c ");
 	      for (j=0; j<NRFEAT; j++)
 		{
-		  if (j!=mid)
+		  //if (j!=mid)
 		    strcat(classifyline,feats[j]);
+		    /*
 		  else
 		    {
 		      if (feats[j][strlen(feats[j])-1]=='d')
@@ -153,6 +154,7 @@ int main(int argc, char *argv[])
 		      else
 			strncat(classifyline,feats[j],strlen(feats[j])-1);
 		    }
+		    */
 		  strcat(classifyline," ");
 		}
 	      strcat(classifyline,"?\n");
