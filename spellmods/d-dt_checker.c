@@ -144,8 +144,9 @@ int main(int argc, char *argv[])
 	      strcpy(classifyline,"c ");
 	      for (j=0; j<NRFEAT; j++)
 		{
-		  if (j!=mid)
+		  //if (j!=mid)
 		    strcat(classifyline,feats[j]);
+		    /*
 		  else
 		    {
 		      if (feats[j][strlen(feats[j])-1]=='d')
@@ -153,6 +154,7 @@ int main(int argc, char *argv[])
 		      else
 			strncat(classifyline,feats[j],strlen(feats[j])-1);
 		    }
+		    */
 		  strcat(classifyline," ");
 		}
 	      strcat(classifyline,"?\n");
@@ -224,28 +226,12 @@ int main(int argc, char *argv[])
 		  if ((max/total>=threshold)&&
 		      (total>MINOCC))
 		    {
-		      if (category[0]!=feats[mid][strlen(feats[mid])-1])
+		      if (strcmp(category,feats[mid])!=0)
 			{
-			  fprintf(stdout," ");
-			  if (category[0]=='t')
-			    {
-			      fprintf(stdout,"%st",
-				      feats[mid]);
-			      fprintf(stderr,"correcting %s to %st\n",
-				      feats[mid],feats[mid]);
-			    }
-			  else
-			    {
-			      for (j=0; j<strlen(feats[mid])-1; j++)
-				fprintf(stdout,"%c",
-					feats[mid][j]);
-			      fprintf(stderr,"correcting %s to ",
-				      feats[mid]);
-			      for (j=0; j<strlen(feats[mid])-1; j++)
-				fprintf(stderr,"%c",
-					feats[mid][j]);
-			      fprintf(stderr,"\n");
-			    }
+			  fprintf(stdout,"%s",
+				  category);
+			  fprintf(stderr,"correcting %s to %s\n",
+				      feats[mid],category);
 			}
 		    }
 		  
