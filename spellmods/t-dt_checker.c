@@ -142,26 +142,11 @@ int main(int argc, char *argv[])
 		  feats[mid]);
 	  if (ddtmatch)
 	    {
-	      // create target
-	      if (feats[mid][strlen(feats[mid])-2]=='d')
-		{
-		  strncpy(stem,feats[mid],strlen(feats[mid])-2);
-		  strcpy(target,"dt");
-		}
-	      else
-		{
-		  strncpy(stem,feats[mid],strlen(feats[mid])-1);
-		  strcpy(target,"t");
-		}
-
 	      // call Timbl
 	      strcpy(classifyline,"c ");
 	      for (j=0; j<NRFEAT; j++)
 		{
-		  if (j!=mid)
-		    strcat(classifyline,feats[j]);
-		  else
-		    strcat(classifyline,stem);
+		  strcat(classifyline,feats[j]);
 		  strcat(classifyline," ");
 		}
 	      strcat(classifyline,"?\n");
@@ -235,21 +220,10 @@ int main(int argc, char *argv[])
 		    {
 		      if (strcmp(category,target)!=0)
 			{
-			  fprintf(stdout," ");
-			  if (category[0]=='t')
-			    {
-			      fprintf(stdout,"%st",
-				      stem);
-			      fprintf(stderr,"correcting %sdt to %st\n",
-				      stem,stem);
-			    }
-			  else
-			    {
-			      fprintf(stdout,"%sdt",
-				      stem);
-			      fprintf(stderr,"correcting %st to %sdt\n",
-				      stem,stem);
-			    }
+			  fprintf(stdout," %s",
+				  category);
+			  fprintf(stderr,"correcting %s to %s\n",
+				  feats[mid],category);
 			}
 		    }
 		  
