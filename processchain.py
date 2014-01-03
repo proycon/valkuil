@@ -338,7 +338,7 @@ class T_DT_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/t-dt_checker ' + str(self.threshold) + ' ' + self.rootdir + 'spellmods/ValkuilLexicon.1.1.t-dt ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 't-dt_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/t-dt_checker ' + str(self.threshold) + ' ' + self.rootdir + 'spellmods/ValkuilLexicon.1.5.t-dt ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 't-dt_checker.test.out')
 
 
 
