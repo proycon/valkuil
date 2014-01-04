@@ -228,7 +228,7 @@ int main(int argc, char *argv[])
 		    {
 		      if (strcmp(category,feats[mid])!=0)
                         {
-                          fprintf(stdout,"%s",
+                          fprintf(stdout," %s",
                                   category);
                           fprintf(stderr,"correcting %s to %s\n",
 				  feats[mid],category);
