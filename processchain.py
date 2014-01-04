@@ -372,7 +372,7 @@ class TTE_TTEN_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/tte-tten_checker ' + str(self.threshold) + ' ' + self.rootdir + 'spellmods/ValkuilLexicon.1.1.tte-tten ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'tte-tten_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/tte-tten_checker ' + str(self.threshold) + ' ' + self.rootdir + 'spellmods/ValkuilLexicon.1.5.tte-tten ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'tte-tten_checker.test.out')
 
 
 class T_Checker(AbstractModule):
