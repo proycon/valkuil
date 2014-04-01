@@ -30,6 +30,17 @@ def process(request):
     else:
         return render_to_response('error.html',{'errormessage': "Er is geen geldige tekst ingevoerd!"} )
 
+    #Verify checkum and other measures to counter spammers
+    d = datetime.datetime.now()
+    if int(request.REQUEST['checksum']) != d.year + d.month + d.day:
+        return render_to_response('error.html',{'errormessage': "Invalid checksum, are you sure you are human? If not, begone!"} )
+    elif text.find("href=") != -1 or text.find("<iframe") != -1 or text.find("<img") != -1:
+        return render_to_response('error.html',{'errormessage': "Je invoer moet bestaan uit platte tekst, er zijn HTML elementen gedetecteerd en deze kunnen niet verwerkt worden"} )
+    elif text.find("[url=") != -1 or text.find("[img]") != -1:
+        return render_to_response('error.html',{'errormessage': "Je invoer moet bestaan uit platte tekst, er zijn BBCode elementen gedetecteerd en deze kunnen niet verwerkt worden"} )
+    elif text.count("http") > 10:
+        return render_to_response('error.html',{'errormessage': "Je invoer bevat teveel webaddressen in de tekst, dit is om spam tegen te gaan niet toegestaan"} )
+
 
     #generate a random ID for this project
     id = 'D' + hex(random.getrandbits(128))[2:-1]
