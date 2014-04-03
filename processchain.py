@@ -865,7 +865,7 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
     doc = folia.Document(file=outputdir + id + '.xml')
     doc.declare(folia.Correction, 'valkuilset' )
     doc.declare(folia.ErrorDetection, 'valkuilset' )
-    doc.language(value='dut');
+    doc.language(value='nld');
 
     if not standalone and doc.metadatatype == folia.MetaDataType.NATIVE:
         if 'donate' in clamdata and clamdata['donate']:
