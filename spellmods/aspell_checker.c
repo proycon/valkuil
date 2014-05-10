@@ -247,7 +247,7 @@ int main(int argc, char *argv[])
       
       if ((nrclosest>0)&&
 	  (wordlen>=MINLENGTH)&&
-	  // (!cap)&& on second thought, keep the capitalization corrections
+	  (!cap)&& // leaving this out causes too many false positives
 	  (!hyp))
 	{
 	  for (i=0; i<nrclosest; i++)
