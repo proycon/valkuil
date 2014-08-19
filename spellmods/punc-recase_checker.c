@@ -1,6 +1,6 @@
-/* confusible spellmod 
+/* punc-recase spellmod 
 
-   syntax: confusible_checker <word1> <word2> <threshold> <valkuil-inst>
+   syntax: punc-recase_checker <threshold> <valkuil-inst>
 
 */
 
@@ -20,10 +20,6 @@ int main(int argc, char *argv[])
 {
   FILE *bron;
   float distweight[1024];
-  char word1[1024];
-  char capword1[1024];
-  char word2[1024];
-  char capword2[1024];
   float total,max,threshold;
   int  i,j,mid,sock,connected,nrdist,maxnr;
   char classifyline[32768];
@@ -35,15 +31,7 @@ int main(int argc, char *argv[])
   char category[1024];
   char match;
 
-  strcpy(word1,argv[1]);
-  strcpy(capword1,word1);
-  capword1[0]-=32;
-
-  strcpy(word2,argv[2]);
-  strcpy(capword2,word2);
-  capword2[0]-=32;
-
-  sscanf(argv[3],"%f",&threshold);
+  sscanf(argv[1],"%f",&threshold);
   if ((threshold<0.5)||
       (threshold>1.0))
     {
@@ -79,7 +67,7 @@ int main(int argc, char *argv[])
   sock_gets(sock,buff,sizeof(buff)-1); 
   
   mid=NRFEAT/2;
-  bron=fopen(argv[4],"r");
+  bron=fopen(argv[2],"r");
   fgets(line,32768,bron);
   while (!feof(bron))
     {
