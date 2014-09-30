@@ -9,7 +9,7 @@
 #       http://ilk.uvt.nl/~mvgompel
 #       Induction for Linguistic Knowledge Research Group
 #       Universiteit van Tilburg
-#       
+#
 #       Licensed under GPLv3
 #
 ###############################################################
@@ -55,16 +55,17 @@ elif host == 'applejack': #Nijmegen
     BINDIR = "/vol/customopt/uvt-ru/bin/"
     VALKUILDIR = "/scratch2/www/webservices-lst/live/repo/valkuil/"
     USERS_MYSQL = {
-        'host': 'mysql-clamopener.science.ru.nl', 
-        'user': 'clamopener',        
+        'host': 'mysql-clamopener.science.ru.nl',
+        'user': 'clamopener',
         'password': D(open(environ['CLAMOPENER_KEYFILE']).read().strip()),
         'database': 'clamopener',
         'table': 'clamusers_clamusers'
     }
     DEBUG = True
     REALM = "WEBSERVICES-LST"
-    #DIGESTOPAQUE = open(environ['CLAM_DIGESTOPAQUEFILE']).read().strip() 
-elif host == 'echo' or host == 'nomia' or host == 'echo.uvt.nl' or host == 'nomia.uvt.nl': #Tilburg        
+    ADMINS = ['proycon','antalb','wstoop']
+    #DIGESTOPAQUE = open(environ['CLAM_DIGESTOPAQUEFILE']).read().strip()
+elif host == 'echo' or host == 'nomia' or host == 'echo.uvt.nl' or host == 'nomia.uvt.nl': #Tilburg
     #Assuming ILK server
     CLAMDIR = "/var/www/clam"
     ROOT = "/var/www/clamdata/valkuil/"
@@ -75,7 +76,7 @@ elif host == 'echo' or host == 'nomia' or host == 'echo.uvt.nl' or host == 'nomi
     BINDIR = '/var/www/bin/'
     VALKUILDIR = '/var/www/valkuil/'
 else:
-    raise Exception("I don't know where I'm running from! Got " + host)    
+    raise Exception("I don't know where I'm running from! Got " + host)
 
 # ======== AUTHENTICATION & SECURITY ===========
 
@@ -84,9 +85,9 @@ USERS = None #no user authentication
 #USERS = { 'admin': pwhash('admin', SYSTEM_ID, 'secret'), 'proycon': pwhash('proycon', SYSTEM_ID, 'secret'), 'antal': pwhash('antal', SYSTEM_ID, 'secret') , 'martin': pwhash('martin', SYSTEM_ID, 'secret') }
 
 ADMINS = ['admin'] #Define which of the above users are admins
-#USERS = { 'username': pwhash('username', SYSTEM_ID, 'secret') } #Using pwhash and plaintext password in code is not secure!! 
+#USERS = { 'username': pwhash('username', SYSTEM_ID, 'secret') } #Using pwhash and plaintext password in code is not secure!!
 
-#Do you want all projects to be public to all users? Otherwise projects are 
+#Do you want all projects to be public to all users? Otherwise projects are
 #private and only open to their owners and users explictly granted access.
 PROJECTS_PUBLIC = True
 
@@ -116,14 +117,14 @@ CUSTOM_FORMATS_MODULE = None
 
 # ======== PROFILE DEFINITIONS ===========
 
-PROFILES = [ 
+PROFILES = [
     Profile(
-        InputTemplate('textinput', PlainTextFormat,"Input text",  
-            StaticParameter(id='encoding',name='Encoding',description='The character encoding of the file', value='utf-8'),  
+        InputTemplate('textinput', PlainTextFormat,"Input text",
+            StaticParameter(id='encoding',name='Encoding',description='The character encoding of the file', value='utf-8'),
             CharEncodingConverter(id='latin1',label='Convert from Latin-1',charset='iso-8859-1'),
             PDFtoTextConverter(id='pdfconv',label='Convert from PDF Document'),
             MSWordConverter(id='docconv',label='Convert from MS Word Document'),
-            acceptarchive=True,            
+            acceptarchive=True,
             extension='.txt',
             multi=True
         ),
@@ -135,7 +136,7 @@ PROFILES = [
         ),
     ),
     Profile(
-        InputTemplate('foliainput', FoLiAXMLFormat,"FoLiA Document (tokenised)",  
+        InputTemplate('foliainput', FoLiAXMLFormat,"FoLiA Document (tokenised)",
             extension='.xml',
             acceptarchive=True,
             multi=True
@@ -146,7 +147,7 @@ PROFILES = [
             extension='.xml',
             multi=True
         ),
-    ) 
+    )
 ]
 
 # ======== COMMAND ===========
@@ -156,14 +157,14 @@ PROFILES = [
 #absolute paths is preferred. The current working directory will be
 #set to the project directory.
 #
-#You can make use of the following special variables, 
+#You can make use of the following special variables,
 #which will be automatically set by CLAM:
 #     $INPUTDIRECTORY  - The directory where input files are uploaded.
 #     $OUTPUTDIRECTORY - The directory where the system should output
 #                        its output files.
-#     $STATUSFILE      - Filename of the .status file where the system 
-#                        should output status messages. 
-#     $DATAFILE        - Filename of the clam.xml file describing the 
+#     $STATUSFILE      - Filename of the .status file where the system
+#                        should output status messages.
+#     $DATAFILE        - Filename of the clam.xml file describing the
 #                        system and chosen configuration.
 #     $USERNAME        - The username of the currently logged in user
 #                        (set to "anonymous" if there is none)
@@ -174,13 +175,13 @@ COMMAND = VALKUILDIR + "processchain.py clam " + VALKUILDIR + ' ' + BINDIR + " $
 # ======== PARAMETER DEFINITIONS ===========
 
 #The parameters are subdivided into several groups. In the form of a list of (groupname, parameters) tuples. The parameters are a list of instances from common/parameters.py
-PARAMETERS =  [ 
-    ('Instellingen', [ 
+PARAMETERS =  [
+    ('Instellingen', [
         #BooleanParameter(id='createlexicon',name='Create Lexicon',description='Generate a separate overall lexicon?'),
         #ChoiceParameter(id='casesensitive',name='Case Sensitivity',description='Enable case sensitive behaviour?', choices=['yes','no'],default='no'),
         #StringParameter(id='author',name='Author',description='Sign output metadata with the specified author name',maxlength=255),
         FloatParameter(id='sensitivity', name='Foutgevoeligheid',description="Hoe gevoelig moet de spellingcorrector zijn en iets als fout aan merken? (0.5 - Sla heel snel alarm, 1 - Sla nooit alarm)", minvalue=0.5, maxvalue=1.0, default=0.9, required=True),
-        BooleanParameter(id='donate', name='Fouten doneren',description="Gevonden fouten doneren voor wetenschappelijk onderzoek?")            
+        BooleanParameter(id='donate', name='Fouten doneren',description="Gevonden fouten doneren voor wetenschappelijk onderzoek?")
     ] )
 ]
 
