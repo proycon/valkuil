@@ -980,7 +980,7 @@ else:
     try:
         threshold = int(sys.argv[3])
     except:
-        threshold = 0.95
+        threshold = 0.9
     rootdir = ''
     outputdir = '' #stdout
     statusfile = '/tmp/valkuilstatus'

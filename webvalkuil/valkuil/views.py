@@ -35,7 +35,7 @@ def process(request):
     try:
         if int(request.REQUEST['checksum']) != d.year + d.month + d.day:
             return render_to_response('error.html',{'errormessage': "Invalid checksum, are you sure you are human? If not, begone!"} )
-    except ValueError:
+    except:
         return render_to_response('error.html',{'errormessage': "Invalid checksum, are you sure you are human? If not, begone!"} )
     if text.find("href=") != -1 or text.find("<iframe") != -1 or text.find("<img") != -1:
         return render_to_response('error.html',{'errormessage': "Je invoer moet bestaan uit platte tekst, er zijn HTML elementen gedetecteerd en deze kunnen niet verwerkt worden"} )
