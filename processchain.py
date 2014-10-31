@@ -939,7 +939,7 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
 
 
 def folia2json(doc):
-    data = {}
+    data = []
     for correction in doc.data[0].select(folia.Correction):
         suggestions = []
         for suggestion in correction.suggestions():
