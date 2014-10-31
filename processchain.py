@@ -1007,7 +1007,7 @@ elif sys.argv[1] == 'process_sentence':
     rootdir = ''
     statusfile = None
 
-    sentence = sys.argv[2]
+    sentence = unicode(sys.argv[2], 'utf-8')
 
     tmpdir = ".process_sentence." + "%032x" % random.getrandbits(128)
     os.mkdir(tmpdir)
