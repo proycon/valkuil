@@ -1041,6 +1041,6 @@ else:
     process(inputfile, outputdir, rootdir, bindir, statusfile, modules,  threshold,standalone)
 
 
-clam.common.status.write(statusfile, "All done",100)
+if not standalone and statusfile: clam.common.status.write(statusfile, "All done",100)
 errout("All done!")
 sys.exit(0)
