@@ -939,7 +939,7 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
 
 
 def folia2json(doc):
-    data = []
+    data = {}
     for correction in doc.data[0].select(folia.Correction):
         suggestions = []
         for suggestion in correction.suggestions():
@@ -965,7 +965,7 @@ def folia2json(doc):
         if index is None:
             raise Exception("index not found")
 
-        data.append( {'index': index, 'text': text, 'suggestions': suggestions  } )
+        data.append( {'index': index, 'text': text, 'suggestions': suggestions, 'annotator': correction.annotator  } )
     return data
 
 
