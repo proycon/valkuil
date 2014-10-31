@@ -24,7 +24,7 @@ from os import uname, environ
 from base64 import b64decode as D
 import sys
 
-REQUIRE_VERSION = 0.9.11
+REQUIRE_VERSION = "0.9.11"
 
 # ======== GENERAL INFORMATION ===========
 
