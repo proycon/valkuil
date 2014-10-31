@@ -7,10 +7,11 @@
 
 import sys
 import os
-import codecs
 import datetime
 import shutil
+import json
 import io
+import random
 from threading import Thread
 from Queue import Queue
 from pynlpl.textprocessors import Windower
@@ -82,6 +83,9 @@ class AbstractModule(object): #Do not modify
         #Determine an ID for the next correction
         correction_id = word.generate_id(folia.Correction)
 
+        if not 'confidence' in kwargs:
+           kwargs['confidence']  = 0.5
+
         if 'suggestions' in kwargs:
             #add the correction
             word.correct(
@@ -91,7 +95,8 @@ class AbstractModule(object): #Do not modify
                 cls=kwargs['cls'],
                 annotator=kwargs['annotator'],
                 annotatortype=folia.AnnotatorType.AUTO,
-                datetime=datetime.datetime.now()
+                datetime=datetime.datetime.now(),
+                confidence=kwargs['confidence']
             )
         elif 'suggestion' in kwargs:
             #add the correction
@@ -102,7 +107,8 @@ class AbstractModule(object): #Do not modify
                 cls=kwargs['cls'],
                 annotator=kwargs['annotator'],
                 annotatortype=folia.AnnotatorType.AUTO,
-                datetime=datetime.datetime.now()
+                datetime=datetime.datetime.now(),
+                confidence=kwargs['confidence']
             )
         else:
             raise Exception("No suggestions= specified!")
@@ -839,7 +845,7 @@ def processor(queue):
         job.run()
         queue.task_done()
 
-def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshold,standalone):
+def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshold,standalone, save=True):
     #detect ID from filename
     id = os.path.basename(inputfile).split('.',1)[0].replace(' ','_')
 
@@ -850,7 +856,6 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
         shutil.copyfile(inputfile, outputdir+id+'.xml')
     else:
         clam.common.status.write(statusfile, "Starting Tokeniser",1)
-        os.system('dos2unix ' + inputfile)
         errout("Starting tokeniser...")
         if sys.argv[1] == 'clam':
             os.system(bindir + 'ucto -c ' + bindir + '/../etc/ucto/tokconfig-nl -x ' + id + ' ' + inputfile + ' > ' + outputdir + id + '.xml')
@@ -924,13 +929,42 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
     ###### END ######
 
     #Store FoLiA document
-    clam.common.status.write(statusfile, "Saving document",99)
-    errout( "Saving document")
-    doc.save()
+    if save:
+        clam.common.status.write(statusfile, "Saving document",99)
+        errout( "Saving document")
+        doc.save()
+
+    return doc
 
 
 
+def folia2json(doc):
+    data = []
+    for correction in doc.data[0].select(folia.Correction):
+        suggestions = []
+        for suggestion in correction.suggestions:
+            suggestions.append( {'suggestion': unicode(suggestion), 'confidence': suggestion.confidence } )
 
+        ancestor = correction.ancestor(folia.AbstractStructureElement)
+        index = None
+        if isinstance(ancestor, folia.Sentence):
+            index = 0
+            for i, item in enumerate(ancestor):
+                if isinstance(item, folia.Word):
+                    index += 1
+                if item is correction:
+                    break
+        elif isinstance(ancestor, folia.Word):
+            sentence = ancestor.ancestor(folia.Sentence)
+            for i, word in enumerate(sentence.words()):
+                if word is ancestor:
+                    index = i
+                    break
+        if index is None:
+            raise Exception("index not found")
+
+        data.append( {'index': index, 'original': unicode(correction.original()), 'suggestions': suggestions  } )
+    return data
 
 
 
@@ -968,6 +1002,25 @@ if sys.argv[1] == 'clam':
 
     sys.exit(0)
 
+elif sys.argv[1] == 'process_sentence':
+    standalone = True
+    rootdir = ''
+    statusfile = None
+
+    sentence = sys.argv[2]
+
+    tmpdir = ".process_sentence." + "%032x" % random.getrandbits(128)
+    os.mkdir(tmpdir)
+    with io.open(tmpdir + '/sentence.txt', 'w', encoding='utf-8') as f:
+        f.write(sentence)
+    threshold = 0.9
+
+    doc = process(outputdir + '/sentence.txt', tmpdir, rootdir, bindir, statusfile, modules, threshold,standalone, False)
+
+    json.dumps(folia2json(doc))
+
+    shutil.rmtree(tmpdir)
+
 else:
     standalone = True
     try:
@@ -983,7 +1036,7 @@ else:
         threshold = 0.9
     rootdir = ''
     outputdir = '' #stdout
-    statusfile = '/tmp/valkuilstatus'
+    statusfile = None
 
     process(inputfile, outputdir, rootdir, bindir, statusfile, modules,  threshold,standalone)
 

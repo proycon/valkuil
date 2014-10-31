@@ -24,7 +24,7 @@ from os import uname, environ
 from base64 import b64decode as D
 import sys
 
-REQUIRE_VERSION = 0.7
+REQUIRE_VERSION = 0.9.11
 
 # ======== GENERAL INFORMATION ===========
 
@@ -185,3 +185,10 @@ PARAMETERS =  [
     ] )
 ]
 
+# ======== ACTIONS ===========
+
+ACTIONS = [
+    Action(id="process_sentence", name="Process Sentence", description="Processes a single tokenised sentence and returns a JSON reply containing suggestions for correction",parameters=[
+        StringParameter(id="sentence",name="Sentence",description="The sentence to check, must be tokenised!",required=True),
+    ])
+]
