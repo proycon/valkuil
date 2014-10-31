@@ -1019,7 +1019,7 @@ elif sys.argv[1] == 'process_sentence':
 
     doc = process(tmpdir + '/sentence.txt', tmpdir, rootdir, bindir, statusfile, modules, threshold,standalone, False)
 
-    json.dumps(folia2json(doc))
+    print json.dumps(folia2json(doc))
 
     shutil.rmtree(tmpdir)
 
