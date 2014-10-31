@@ -1015,7 +1015,7 @@ elif sys.argv[1] == 'process_sentence':
         f.write(sentence)
     threshold = 0.9
 
-    doc = process(outputdir + '/sentence.txt', tmpdir, rootdir, bindir, statusfile, modules, threshold,standalone, False)
+    doc = process(tmpdir + '/sentence.txt', tmpdir, rootdir, bindir, statusfile, modules, threshold,standalone, False)
 
     json.dumps(folia2json(doc))
 
