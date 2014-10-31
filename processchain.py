@@ -855,7 +855,7 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
     if inputfile[-4:] == '.xml':
         shutil.copyfile(inputfile, outputdir+id+'.xml')
     else:
-        clam.common.status.write(statusfile, "Starting Tokeniser",1)
+        if not standalone and statusfile: clam.common.status.write(statusfile, "Starting Tokeniser",1)
         errout("Starting tokeniser...")
         if sys.argv[1] == 'clam':
             os.system(bindir + 'ucto -c ' + bindir + '/../etc/ucto/tokconfig-nl -x ' + id + ' ' + inputfile + ' > ' + outputdir + id + '.xml')
@@ -864,7 +864,7 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
 
         errout("Tokeniser finished")
 
-    clam.common.status.write(statusfile, "Reading FoLiA document",2)
+    if not standalone and statusfile: clam.common.status.write(statusfile, "Reading FoLiA document",2)
 
     #Step 2 - Read FoLiA document
     doc = folia.Document(file=outputdir + id + '.xml')
@@ -885,7 +885,7 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
 
     ########## Extract data for modules ##############
 
-    clam.common.status.write(statusfile, "Extracting data for modules",3)
+    if not standalone and statusfile: clam.common.status.write(statusfile, "Extracting data for modules",3)
 
 
     f = io.open(outputdir + 'input.tok.txt','w',encoding='utf-8')
@@ -903,7 +903,7 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
     # (nothing to edit here)
 
     errout( "Calling modules")
-    clam.common.status.write(statusfile, "Calling Modules",4)
+    if not standalone and statusfile: clam.common.status.write(statusfile, "Calling Modules",4)
 
 
 
@@ -930,7 +930,7 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
 
     #Store FoLiA document
     if save:
-        clam.common.status.write(statusfile, "Saving document",99)
+        if not standalone and statusfile: clam.common.status.write(statusfile, "Saving document",99)
         errout( "Saving document")
         doc.save()
 
