@@ -948,6 +948,7 @@ def folia2json(doc):
         ancestor = correction.ancestor(folia.AbstractStructureElement)
         index = None
         if isinstance(ancestor, folia.Sentence):
+            text = unicode(correction.current())
             index = 0
             for i, item in enumerate(ancestor):
                 if isinstance(item, folia.Word):
@@ -955,6 +956,7 @@ def folia2json(doc):
                 if item is correction:
                     break
         elif isinstance(ancestor, folia.Word):
+            text = unicode(ancestor)
             sentence = ancestor.ancestor(folia.Sentence)
             for i, word in enumerate(sentence.words()):
                 if word is ancestor:
@@ -963,7 +965,7 @@ def folia2json(doc):
         if index is None:
             raise Exception("index not found")
 
-        data.append( {'index': index, 'text': unicode(correction.current()), 'suggestions': suggestions  } )
+        data.append( {'index': index, 'text': text, 'suggestions': suggestions  } )
     return data
 
 
