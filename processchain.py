@@ -40,7 +40,7 @@ class AbstractModule(object): #Do not modify
 
     def runcmd(self,cmd):
         global statusfile
-        clam.common.status.write(statusfile, "Running module " + self.NAME,50)
+        if not standalone and statusfile: clam.common.status.write(statusfile, "Running module " + self.NAME,50)
         errout("\tCalling module " + self.NAME + ": " + cmd)
         r = os.system(cmd)
         if r:
