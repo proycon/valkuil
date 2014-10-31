@@ -942,7 +942,7 @@ def folia2json(doc):
     data = []
     for correction in doc.data[0].select(folia.Correction):
         suggestions = []
-        for suggestion in correction.suggestions:
+        for suggestion in correction.suggestions():
             suggestions.append( {'suggestion': unicode(suggestion), 'confidence': suggestion.confidence } )
 
         ancestor = correction.ancestor(folia.AbstractStructureElement)
