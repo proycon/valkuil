@@ -6,7 +6,7 @@ OBJ = sockhelp.o
 %.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-all: punc-recase_checker confusible_checker confusible_checker_error d-dt_checker t-dt_checker d-t_checker tte-tten_checker t_checker lexicon_checker split_checker runon_checker wopr_checker garbage_checker soundalike_checker errorlist_checker wiki_checker aspell_checker
+all: confusible_checker confusible_checker_error d-dt_checker t-dt_checker d-t_checker tte-tten_checker t_checker lexicon_checker split_checker runon_checker wopr_checker garbage_checker soundalike_checker errorlist_checker wiki_checker aspell_checker
 
 punc-recase_checker: punc-recase_checker.o $(OBJ)
 	gcc -o $@ $^ $(CFLAGS)
