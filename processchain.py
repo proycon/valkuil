@@ -963,7 +963,7 @@ def folia2json(doc):
         if index is None:
             raise Exception("index not found")
 
-        data.append( {'index': index, 'original': unicode(correction.original()), 'suggestions': suggestions  } )
+        data.append( {'index': index, 'text': unicode(correction.current()), 'suggestions': suggestions  } )
     return data
 
 
