@@ -1008,18 +1008,19 @@ elif sys.argv[1] == 'process_sentence':
     standalone = True
     rootdir = sys.argv[2]
     bindir = sys.argv[3]
+    if bindir[-1] != '/':
+        bindir += '/'
     statusfile = None
 
     sentence = unicode(sys.argv[4], 'utf-8')
 
-    tmpdir = ".process_sentence." + "%032x" % random.getrandbits(128)
+    tmpdir = ".process_sentence." + "%032x" % random.getrandbits(128) + '/'
     os.mkdir(tmpdir)
     with io.open(tmpdir + '/sentence.txt', 'w', encoding='utf-8') as f:
         f.write(sentence)
     threshold = 0.9
 
     doc = process(tmpdir + '/sentence.txt', tmpdir, rootdir, bindir, statusfile, modules, threshold,standalone, False)
-
     print json.dumps(folia2json(doc))
 
     shutil.rmtree(tmpdir)
