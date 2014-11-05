@@ -190,6 +190,7 @@ PARAMETERS =  [
 ACTIONS = [
     Action(id="process_sentence", name="Process Sentence", description="Processes a single tokenised sentence and returns a JSON reply containing suggestions for correction",
         command=VALKUILDIR + "processchain.py process_sentence "  + VALKUILDIR + " " + BINDIR + " $PARAMETERS",
+        allowanonymous=True,
         mimetype="application/json",parameters=[
         StringParameter(id="sentence",name="Sentence",description="The sentence to check, must be tokenised!",required=True),
     ])
