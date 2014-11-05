@@ -1006,10 +1006,11 @@ if sys.argv[1] == 'clam':
 
 elif sys.argv[1] == 'process_sentence':
     standalone = True
-    rootdir = ''
+    rootdir = sys.argv[2]
+    bindir = sys.argv[3]
     statusfile = None
 
-    sentence = unicode(sys.argv[2], 'utf-8')
+    sentence = unicode(sys.argv[4], 'utf-8')
 
     tmpdir = ".process_sentence." + "%032x" % random.getrandbits(128)
     os.mkdir(tmpdir)
