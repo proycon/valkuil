@@ -12,16 +12,17 @@ int main(int argc, char *argv[])
   int  i,withletters;
   float letterratio;
   unsigned long freq;
+  char *result;
 
   setbuf(stdout,NULL);
 
   bron=fopen(argv[1],"r");
-  fgets(line,65536,bron);
+  result=fgets(line,65536,bron);
   while (!feof(bron))
     {
 
       part=strtok(line," \n");
-      sscanf(part,"%d",&freq);
+      sscanf(part,"%ld",&freq);
 
       part=strtok(NULL," \n");
       strcpy(word,part);
@@ -44,7 +45,7 @@ int main(int argc, char *argv[])
 	  fprintf(stdout,"%ld %s\n",
 		  freq,word);
 	}
-      fgets(line,65536,bron);
+      result=fgets(line,65536,bron);
     }
   fclose(bron);
 }
