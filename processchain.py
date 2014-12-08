@@ -199,7 +199,7 @@ class LexiconModule(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/lexicon_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.5.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'lexicon_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/lexicon_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.6.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'lexicon_checker.test.out')
 
 
 class AspellModule(AbstractModule):
@@ -217,7 +217,7 @@ class AspellModule(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/aspell_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.5.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'aspell_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/aspell_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.6.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'aspell_checker.test.out')
 
 
 class SoundAlikeModule(AbstractModule):
@@ -235,7 +235,7 @@ class SoundAlikeModule(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/soundalike_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.5.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'soundalike_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/soundalike_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.6.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'soundalike_checker.test.out')
 
 
 class GarbageChecker(AbstractModule):
@@ -254,7 +254,7 @@ class GarbageChecker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/garbage_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.5.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'garbage_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/garbage_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.6.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'garbage_checker.test.out')
 
 class SplitChecker(AbstractModule): #(merges in FoLiA terminology)
     NAME = "splitchecker"
@@ -294,7 +294,7 @@ class SplitChecker(AbstractModule): #(merges in FoLiA terminology)
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/split_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.5.freq20.length3.lex ' + self.rootdir + 'spellmods/ValkuilSplitRunon.1.0 ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'split_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/split_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.6.freq20.length3.lex ' + self.rootdir + 'spellmods/ValkuilSplitRunon.1.0 ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'split_checker.test.out')
 
 
 class RunonChecker(AbstractModule): #(splits in FoLiA terminology)
@@ -310,7 +310,7 @@ class RunonChecker(AbstractModule): #(splits in FoLiA terminology)
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/runon_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.5.freq20.length3.lex ' + self.rootdir + 'spellmods/ValkuilSplitRunon.1.0 ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'runon_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/runon_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.6.freq20.length3.lex ' + self.rootdir + 'spellmods/ValkuilSplitRunon.1.0 ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'runon_checker.test.out')
 
 class D_DT_Checker(AbstractModule):
     NAME = "d_dt_checker"
