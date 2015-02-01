@@ -1034,7 +1034,7 @@ elif sys.argv[1] == 'process_sentence':
     os.mkdir(tmpdir)
     with io.open(tmpdir + '/sentence.txt', 'w', encoding='utf-8') as f:
         f.write(sentence)
-    threshold = 0.9
+    threshold = 0.95
 
     doc = process(tmpdir + '/sentence.txt', tmpdir, rootdir, bindir, statusfile, modules, threshold,standalone, False)
     print json.dumps(folia2json(doc))
@@ -1053,7 +1053,7 @@ else:
     try:
         threshold = int(sys.argv[3])
     except:
-        threshold = 0.9
+        threshold = 0.95
     rootdir = ''
     outputdir = '' #stdout
     statusfile = None
