@@ -26,6 +26,7 @@ int main(int argc, char *argv[])
   char readbuffer[1024];
   char locap[1024];
   char buffer[NRFEAT][1024];
+  char membuffer[NRFEAT+3][1024];
   char buff[32768];
   char timblbuffer[1024];
   char punc[NRFEAT][32];
@@ -33,6 +34,7 @@ int main(int argc, char *argv[])
   char puncstring[1024];
   char *part;
   char category[1024];
+  char realout[1024];
   char capped,ready;
 
   ready=0;
@@ -88,12 +90,22 @@ int main(int argc, char *argv[])
   counter=0;
   while (!ready)
     {
-      result=fscanf(bron,"%s ",
-		    readbuffer);
+      if (!feof(bron))
+	{
+	  result=fscanf(bron,"%s ",
+			readbuffer);
+	}
+      else
+	strcpy(readbuffer,"_");
 
-      fprintf(stdout,"%s",
-	      readbuffer);
-	  
+      if ((counter>(NRFEAT/2)-1)&&
+	  (defcon<=NRFEAT/2))
+	fprintf(stdout,"%s",
+		membuffer[(NRFEAT/2)-1]);
+      for (i=NRFEAT; i>0; i--)
+	strcpy(membuffer[i],membuffer[i-1]);
+      strcpy(membuffer[0],readbuffer);
+
       capped=0;
       if ((readbuffer[0]>='A')&&
           (readbuffer[0]<='Z'))
@@ -143,20 +155,29 @@ int main(int argc, char *argv[])
                   if (cap[3]!='-')
 		    {
 		      strcat(classifyline,punc[2]);
+		      strcpy(realout,punc[2]);
 		      strcat(classifyline,"C\n");
+		      strcat(realout,"C");
 		    }
                   else
 		    {
 		      strcat(classifyline,punc[2]);
+		      strcpy(realout,punc[2]);
 		      strcat(classifyline,"\n");
 		    }
                 }
               else
                 {
                   if (cap[3]!='-')
-                    strcat(classifyline,"C\n");
+		    {
+		      strcat(classifyline,"C\n");
+		      strcpy(realout,"C");
+		    }
                   else
-                    strcat(classifyline,"-\n");
+		    {
+		      strcat(classifyline,"-\n");
+		      strcpy(realout,"-");
+		    }
                 }
 
               if (DEBUG)
@@ -229,12 +250,26 @@ int main(int argc, char *argv[])
                       (max/total<1.0)&&
                       (total>MINOCC))
                     {
-		      if (DEBUG)
-			fprintf(stderr,"we have to do something\n");
+		      if ((strcmp(category,realout)!=0)&&
+			  (strcmp(category,"-")!=0))
+			{
+			 
+			  fprintf(stdout," %s",
+				  category);
+			  fprintf(stderr,"line: %s",
+				  classifyline);
+			  fprintf(stderr,"we have to do something: predicted %s is not actual %s\n",
+				  category,realout);
+			}
                     }
 		}
             }
         }
+
+      if ((counter>(NRFEAT/2)-1)&&
+	  (defcon<=NRFEAT/2))
+	fprintf(stdout,"\n");
+
       if (feof(bron))
         defcon++;
       if (defcon==(NRFEAT/2)+2)

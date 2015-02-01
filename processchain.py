@@ -722,6 +722,22 @@ class ALS_DAN_Checker(AbstractModule):
         self.runcmd(self.rootdir + 'spellmods/confusible_checker_error als dan ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'als-dan_checker.test.out')
 
 
+class PUNC_RECASE_Checker(AbstractModule):
+    NAME = "punc_recase_checker"
+
+    def process_result(self):
+        if self.done:
+            #Reading module output and integrating in FoLiA document
+            for word, fields in self.readcolumnedoutput(self.outputdir + 'punc-recase_checker.test.out'):
+                if len(fields) >= 2:
+                    #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
+                    self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='punctuatie-hoofdletter', annotator=self.NAME)
+
+    def run(self):
+        #Call module and ask it to produce output
+        self.runcmd(self.rootdir + 'spellmods/punc-recase_checker ' + str(self.threshold) + ' ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'punc_recase_checker.test.out')
+
+
 class TE_TEN_Checker(AbstractModule):
     NAME = "te_ten_checker"
 
@@ -827,7 +843,7 @@ class KAN_KEN_Checker(AbstractModule):
 
 #Add all desired modules classes here here:
 
-modules = [WOPRChecker, ErrorListModule, LexiconModule, AspellModule, SoundAlikeModule, SplitChecker, RunonChecker, D_DT_Checker, ZEI_ZIJ_Checker, NOG_NOCH_Checker, HARD_HART_Checker, LICHT_LIGT_Checker, GROOTTE_GROTE_Checker, DEZE_DIT_Checker, DE_HET_Checker, ALS_DAN_Checker, HEN_HUN_Checker, U_UW_Checker, KAN_KEN_Checker, ME_MIJN_Checker, WORD_WORDT_Checker, HUN_ZIJ_Checker]
+modules = [WOPRChecker, ErrorListModule, LexiconModule, AspellModule, SoundAlikeModule, SplitChecker, RunonChecker, D_DT_Checker, ZEI_ZIJ_Checker, NOG_NOCH_Checker, HARD_HART_Checker, LICHT_LIGT_Checker, GROOTTE_GROTE_Checker, DEZE_DIT_Checker, DE_HET_Checker, ALS_DAN_Checker, HEN_HUN_Checker, U_UW_Checker, KAN_KEN_Checker, ME_MIJN_Checker, WORD_WORDT_Checker, HUN_ZIJ_Checker, PUNC_RECASE_Cheker]
 
 # disabled for now: WikiChecker, T_DT_Checker, WIL_WILT_Checker, JOU_JOUW_Checker, DIE_WELKE_Checker, T_Checker, TTE_TTEN_Checker, TE_TEN_Checker, D_T_Checker, HAAR_ZIJ_Checker, HOOGTE_HOOGTEN_Checker, MIJ_IK_Checker, GarbageChecker, BEIDE_BEIDEN_Checker, EENS_IS_Checker
 
