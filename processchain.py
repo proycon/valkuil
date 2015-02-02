@@ -728,10 +728,51 @@ class PUNC_RECASE_Checker(AbstractModule):
     def process_result(self):
         if self.done:
             #Reading module output and integrating in FoLiA document
+            prevword = None
             for word, fields in self.readcolumnedoutput(self.outputdir + 'punc-recase_checker.test.out'):
                 if len(fields) >= 2:
-                    #Add correction suggestion (The last field holds the suggestion? (assumption, may differ per module))
-                    self.addcorrection(word, suggestions=[x.strip() for x in fields[1:]], cls='punctuatie-hoofdletter', annotator=self.NAME)
+                    recase = False
+                    if field[0] == 'C':
+                        recase = True
+
+                    if field[0] != 'C' and not field[0].isalnum():
+                        punctuation = field[0]
+                        if punctuation in EOS and prevword:
+                            #punctuation causes a sentence split!!
+                            assert word.sentence() is prevword.sentence()
+                            parent = prevword.sentence().ancestor(folia.StructureElement)
+                            sentence1 = folia.Sentence(self.doc, generate_id_in=parent)
+                            sentence2 = folia.Sentence(self.doc, generate_id_in=parent)
+                            target = sentence1
+                            for w in word.sentence():
+                                if w is word:
+                                    target = sentence2
+                                w = w.copy(self.doc) #make a deep copy
+                                #generate new ID for each word
+                                w.id = target.generate_id(w.__class__)
+                                target.append(w)
+
+                            #append the missing punctuation
+                            sentence1.words(-1).space = False  #last word before punctuation needs no space
+                            sentence1.append( folia.Word(self.doc, generate_id_in=sentence1, text=punctuation) )
+
+                            if recase:
+                                #we don't generate yet another correction element since this is already part of the sentence split:
+                                textcontent = sentence2.words(0).textcontent()
+                                textcontent.value = textcontent.value[0].upper() + textcontent.value[1:]
+
+                            sentence.split(*[sentence1,sentence2], cls='punctuatie-hoofdletter', annotator=self.NAME,suggest=True, datetime=datetime.datetime.now() )
+                        else:
+                            #prepend punctuation to current word and recase if necessary
+                            t = word.text()
+                            if recase:
+                                t = t[0].upper() + t[1:]
+                            self.splitcorrection(word, [punctuation, t], cls='punctuatie-hoofdletter', annotator=self.NAME)
+
+                            #nospace setting on prevword not included in the suggestions, can be set when a correction is accepted
+
+                prevword = word
+
 
     def run(self):
         #Call module and ask it to produce output
