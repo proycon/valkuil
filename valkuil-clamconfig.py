@@ -53,8 +53,7 @@ elif host == 'applejack': #Nijmegen
     PORT = 80
     URLPREFIX = "valkuil"
     BINDIR = "/vol/customopt/uvt-ru/bin/"
-    #VALKUILDIR = "/scratch2/www/webservices-lst/live/repo/valkuil/"
-    VALKUILDIR = "/vol/bigdata/corpora/ValkuilData/ValkuilServers/"
+    VALKUILDIR = "/scratch2/www/webservices-lst/live/repo/valkuil/"
     USERS_MYSQL = {
         'host': 'mysql-clamopener.science.ru.nl',
         'user': 'clamopener',
