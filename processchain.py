@@ -199,7 +199,7 @@ class LexiconModule(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/lexicon_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.5.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'lexicon_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/lexicon_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.6.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'lexicon_checker.test.out')
 
 
 class AspellModule(AbstractModule):
@@ -217,7 +217,7 @@ class AspellModule(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/aspell_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.5.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'aspell_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/aspell_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.6.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'aspell_checker.test.out')
 
 
 class SoundAlikeModule(AbstractModule):
@@ -235,7 +235,7 @@ class SoundAlikeModule(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/soundalike_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.5.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'soundalike_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/soundalike_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.6.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'soundalike_checker.test.out')
 
 
 class GarbageChecker(AbstractModule):
@@ -254,7 +254,7 @@ class GarbageChecker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/garbage_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.5.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'garbage_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/garbage_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.6.freq20.length3.lex ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'garbage_checker.test.out')
 
 class SplitChecker(AbstractModule): #(merges in FoLiA terminology)
     NAME = "splitchecker"
@@ -294,7 +294,7 @@ class SplitChecker(AbstractModule): #(merges in FoLiA terminology)
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/split_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.5.freq20.length3.lex ' + self.rootdir + 'spellmods/ValkuilSplitRunon.1.0 ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'split_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/split_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.6.freq20.length3.lex ' + self.rootdir + 'spellmods/ValkuilSplitRunon.1.0 ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'split_checker.test.out')
 
 
 class RunonChecker(AbstractModule): #(splits in FoLiA terminology)
@@ -310,7 +310,7 @@ class RunonChecker(AbstractModule): #(splits in FoLiA terminology)
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/runon_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.5.freq20.length3.lex ' + self.rootdir + 'spellmods/ValkuilSplitRunon.1.0 ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'runon_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/runon_checker ' + self.rootdir + 'spellmods/ValkuilLexicon.1.6.freq20.length3.lex ' + self.rootdir + 'spellmods/ValkuilSplitRunon.1.0 ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'runon_checker.test.out')
 
 class D_DT_Checker(AbstractModule):
     NAME = "d_dt_checker"
@@ -722,6 +722,63 @@ class ALS_DAN_Checker(AbstractModule):
         self.runcmd(self.rootdir + 'spellmods/confusible_checker_error als dan ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'als-dan_checker.test.out')
 
 
+class PUNC_RECASE_Checker(AbstractModule):
+    NAME = "punc_recase_checker"
+
+    def process_result(self):
+        if self.done:
+            #Reading module output and integrating in FoLiA document
+            prevword = None
+            for word, fields in self.readcolumnedoutput(self.outputdir + 'punc-recase_checker.test.out'):
+                if len(fields) >= 2:
+                    recase = False
+                    if field[0] == 'C':
+                        recase = True
+
+                    if field[0] != 'C' and not field[0].isalnum():
+                        punctuation = field[0]
+                        if punctuation in EOS and prevword:
+                            #punctuation causes a sentence split!!
+                            assert word.sentence() is prevword.sentence()
+                            parent = prevword.sentence().ancestor(folia.StructureElement)
+                            sentence1 = folia.Sentence(self.doc, generate_id_in=parent)
+                            sentence2 = folia.Sentence(self.doc, generate_id_in=parent)
+                            target = sentence1
+                            for w in word.sentence():
+                                if w is word:
+                                    target = sentence2
+                                w = w.copy(self.doc) #make a deep copy
+                                #generate new ID for each word
+                                w.id = target.generate_id(w.__class__)
+                                target.append(w)
+
+                            #append the missing punctuation
+                            sentence1.words(-1).space = False  #last word before punctuation needs no space
+                            sentence1.append( folia.Word(self.doc, generate_id_in=sentence1, text=punctuation) )
+
+                            if recase:
+                                #we don't generate yet another correction element since this is already part of the sentence split:
+                                textcontent = sentence2.words(0).textcontent()
+                                textcontent.value = textcontent.value[0].upper() + textcontent.value[1:]
+
+                            sentence.split(*[sentence1,sentence2], cls='punctuatie-hoofdletter', annotator=self.NAME,suggest=True, datetime=datetime.datetime.now() )
+                        else:
+                            #prepend punctuation to current word and recase if necessary
+                            t = word.text()
+                            if recase:
+                                t = t[0].upper() + t[1:]
+                            self.splitcorrection(word, [punctuation, t], cls='punctuatie-hoofdletter', annotator=self.NAME)
+
+                            #nospace setting on prevword not included in the suggestions, can be set when a correction is accepted
+
+                prevword = word
+
+
+    def run(self):
+        #Call module and ask it to produce output
+        self.runcmd(self.rootdir + 'spellmods/punc-recase_checker 0.8 ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'punc_recase_checker.test.out')
+
+
 class TE_TEN_Checker(AbstractModule):
     NAME = "te_ten_checker"
 
@@ -829,7 +886,7 @@ class KAN_KEN_Checker(AbstractModule):
 
 modules = [WOPRChecker, ErrorListModule, LexiconModule, AspellModule, SoundAlikeModule, SplitChecker, RunonChecker, D_DT_Checker, ZEI_ZIJ_Checker, NOG_NOCH_Checker, HARD_HART_Checker, LICHT_LIGT_Checker, GROOTTE_GROTE_Checker, DEZE_DIT_Checker, DE_HET_Checker, ALS_DAN_Checker, HEN_HUN_Checker, U_UW_Checker, KAN_KEN_Checker, ME_MIJN_Checker, WORD_WORDT_Checker, HUN_ZIJ_Checker]
 
-# disabled for now: WikiChecker, T_DT_Checker, WIL_WILT_Checker, JOU_JOUW_Checker, DIE_WELKE_Checker, T_Checker, TTE_TTEN_Checker, TE_TEN_Checker, D_T_Checker, HAAR_ZIJ_Checker, HOOGTE_HOOGTEN_Checker, MIJ_IK_Checker, GarbageChecker, BEIDE_BEIDEN_Checker, EENS_IS_Checker
+# disabled for now: PUNC_RECASE_Checker, WikiChecker, T_DT_Checker, WIL_WILT_Checker, JOU_JOUW_Checker, DIE_WELKE_Checker, T_Checker, TTE_TTEN_Checker, TE_TEN_Checker, D_T_Checker, HAAR_ZIJ_Checker, HOOGTE_HOOGTEN_Checker, MIJ_IK_Checker, GarbageChecker, BEIDE_BEIDEN_Checker, EENS_IS_Checker
 
 ################################################################################
 
@@ -1018,7 +1075,7 @@ elif sys.argv[1] == 'process_sentence':
     os.mkdir(tmpdir)
     with io.open(tmpdir + '/sentence.txt', 'w', encoding='utf-8') as f:
         f.write(sentence)
-    threshold = 0.9
+    threshold = 0.95
 
     doc = process(tmpdir + '/sentence.txt', tmpdir, rootdir, bindir, statusfile, modules, threshold,standalone, False)
     print json.dumps(folia2json(doc))
@@ -1037,7 +1094,7 @@ else:
     try:
         threshold = int(sys.argv[3])
     except:
-        threshold = 0.9
+        threshold = 0.95
     rootdir = ''
     outputdir = '' #stdout
     statusfile = None

@@ -11,17 +11,18 @@ int main(int argc, char *argv[])
   char **error;
   char **correct;
   char *part;
+  char *result;
   char readstr[1024];
-  int  i,j,nrerrors,readfreq,counter=0;
+  int  i,j,nrerrors,readfreq,counter=0,res;
   char err;
 
   nrerrors=0;
   bron=fopen(argv[1],"r");
-  fgets(line,32768,bron);
+  result=fgets(line,32768,bron);
   while (!feof(bron))
     {
       nrerrors++;
-      fgets(line,32768,bron);
+      result=fgets(line,32768,bron);
     }
   fclose(bron);
 
@@ -34,7 +35,7 @@ int main(int argc, char *argv[])
   bron=fopen(argv[1],"r");
   for (i=0; i<nrerrors; i++)
     {
-      fscanf(bron,"%s ",readstr);
+      res=fscanf(bron,"%s ",readstr);
 
       part=strtok(readstr,"~");
       correct[i]=malloc((strlen(part)+1)*sizeof(char));
@@ -51,7 +52,7 @@ int main(int argc, char *argv[])
   bron=fopen(argv[2],"r");
   while (!feof(bron))
     {
-      fscanf(bron,"%d %s ",
+      res=fscanf(bron,"%d %s ",
 	     &readfreq,readstr);
       err=0;
       for (i=0; ((i<nrerrors)&&(!err)); i++)

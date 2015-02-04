@@ -28,6 +28,7 @@ int main(int argc, char *argv[])
 {
   FILE *bron;
   char **lexicon;
+  char *result;
   unsigned long *freqs;
   unsigned long *hash;
   char word[4096];
@@ -41,7 +42,7 @@ int main(int argc, char *argv[])
   int  closest[MAXNRCLOSEST+1];
   unsigned long closestfreq[MAXNRCLOSEST+1];
   unsigned long thishash,corhash,errhash,corfreq,errfreq;
-  int  i,j,k,l,thislev,nrlex=0,nrclosest=0,readnr,wordlen,lexlen,counter;
+  int  i,j,k,l,thislev,nrlex=0,nrclosest=0,readnr,wordlen,lexlen,counter,res;
   FILE *context;
   char *part;
   unsigned long freqthres=MINFREQTHRESHOLD;
@@ -58,7 +59,7 @@ int main(int argc, char *argv[])
   nrlex=0;
   bron=fopen(argv[1],"r");
   readnr=999;
-  fgets(line,32768,bron);
+  result=fgets(line,32768,bron);
   while ((!feof(bron))&&
 	 (readnr>1))
     {
@@ -75,7 +76,7 @@ int main(int argc, char *argv[])
       lexicon=realloc(lexicon,(nrlex+1)*sizeof(char*));
       freqs=realloc(freqs,(nrlex+1)*sizeof(unsigned long));
       hash=realloc(hash,(nrlex+1)*sizeof(unsigned long));
-      fgets(line,32768,bron);
+      result=fgets(line,32768,bron);
     }
   fclose(bron);
 
@@ -87,7 +88,7 @@ int main(int argc, char *argv[])
   counter=0;
   while (!feof(context))
     {
-      fscanf(context,"%s ",word);
+      res=fscanf(context,"%s ",word);
       strcpy(memword,word);
       part=strtok(word,"~");
       strcpy(corword,part);
