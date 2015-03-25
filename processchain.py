@@ -17,6 +17,7 @@ from Queue import Queue
 from pynlpl.textprocessors import Windower
 import pynlpl.formats.folia as folia
 
+EOS = tuple() #should contain EOS symbols the punc_recase module may generate, in which case a sentence split will be done, but visualisation thereof is not supported yet so we keep it empty
 
 #################### ABSTRACT MODULE  #################################
 
@@ -737,7 +738,7 @@ class PUNC_RECASE_Checker(AbstractModule):
 
                     if field[0] != 'C' and not field[0].isalnum():
                         punctuation = field[0]
-                        if punctuation in EOS and prevword:
+                        if punctuation in EOS and prevword: #EOS is currenly empty and sentence-splits are not supported yet, will be in gecco
                             #punctuation causes a sentence split!!
                             assert word.sentence() is prevword.sentence()
                             parent = prevword.sentence().ancestor(folia.StructureElement)
