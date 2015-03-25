@@ -777,7 +777,7 @@ class PUNC_RECASE_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/punc-recase_checker 0.8 ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'punc_recase_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/punc-recase_checker 0.8 ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'punc-recase_checker.test.out')
 
 
 class TE_TEN_Checker(AbstractModule):
