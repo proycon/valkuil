@@ -136,6 +136,7 @@ class AbstractModule(object): #Do not modify
         newwords = [ folia.Word(self.doc, generate_id_in=sentence, text=w) for w in newwords ]
         kwargs['suggest'] = True
         kwargs['datetime'] = datetime.datetime.now()
+        kwargs['set'] = 'valkuilset'
         word.split(
             *newwords,
             **kwargs
@@ -148,6 +149,7 @@ class AbstractModule(object): #Do not modify
         newword = folia.Word(self.doc, generate_id_in=sentence, text=newword)
         kwargs['suggest'] = True
         kwargs['datetime'] = datetime.datetime.now()
+        kwargs['set'] = 'valkuilset'
         sentence.mergewords(
             newword,
             *originalwords,
