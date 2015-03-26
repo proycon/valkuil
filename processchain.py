@@ -774,7 +774,7 @@ class PUNC_RECASE_Checker(AbstractModule):
                         #prepend punctuation (insertion)
                         index = word.parent.getindex(word)
                         doc = word.doc
-                        word.parent.insert(index,folia.Correction(doc, folia.Suggestion(doc, folia.Word(doc,punctuation,generate_id_in=word.parent)), cls='punctuatie',annotator=self.NAME,annotatortype=folia.AnnotatorType.AUTO, generate_id_in=word.parent))
+                        word.parent.insert(index,folia.Correction(doc, folia.Suggestion(doc, folia.Word(doc,punctuation,generate_id_in=word.parent)), set='valkuilset', cls='punctuatie',annotator=self.NAME,annotatortype=folia.AnnotatorType.AUTO, generate_id_in=word.parent))
 
                         #nospace setting on prevword not included in the suggestions, can be set when a correction is accepted
                     if recase:
