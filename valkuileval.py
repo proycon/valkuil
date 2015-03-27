@@ -41,10 +41,12 @@ def replace(correction, correctionchild):
 class Evaldata():
     def __init__(self):
         self.tp = self.fp = self.fn = 0
+        self.aggrtp = self.aggrfp = self.aggrfn = 0
         self.modtp = defaultdict(int)
         self.modfp = defaultdict(int)
         self.clstp = defaultdict(int)
         self.clsfp = defaultdict(int)
+        self.aggrav = 0
 
     def output(self):
         print("OVERALL RESULTS")
@@ -54,6 +56,12 @@ class Evaldata():
         print(" Precision (micro)                          : ", round(self.tp / (self.tp+self.fp),2) )
         print(" Recall (micro)                             : ", round(self.tp / (self.tp+self.fn),2) )
         print(" F1-score (micro)                           : ", round(2*self.tp / (2*self.tp+self.fp+self.fn),2) )
+        print("")
+        print("Aggregated corrections when they are on the same words:")
+        print(" Aggregated average corrections                        : ", round(self.aggrav,2) )
+        print(" Aggregated precision (micro)                          : ", round(self.aggrtp / (self.aggrtp+self.aggrfp),2) )
+        print(" Aggregated recall (micro)                             : ", round(self.aggrtp / (self.aggrtp+self.aggrfn),2) )
+        print(" Aggregated F1-score (micro)                           : ", round(2*self.aggrtp / (2*self.aggrtp+self.aggrfp+self.aggrfn),2) )
         if self.modtp:
             print("")
             print("PER-MODULE RESULTS")
@@ -101,6 +109,7 @@ def valkuileval(outfile, reffile, evaldata):
     corrections_ref  = list(refdoc.select(folia.Correction))
     if not corrections_ref:
         print("No corrections in reference document " + refdoc.id + ", skipping...",file=sys.stderr)
+        return
 
     #match the ones that cover the same words
     for correction_out in corrections_out:
@@ -111,7 +120,7 @@ def valkuileval(outfile, reffile, evaldata):
         else:
             if correction_out.hascurrent():
                 #merges, splits
-                correction_out.alignedto = [ cr for cr in corrections_ref if cr.original().hastext() and correction_out.current().hastext() and cr.original().text() == correction_out.current().text() and cr.parent.id == correction_out.parent.id ]
+                correction_out.alignedto = [ cr for cr in corrections_ref if cr.original().hastext('original') and correction_out.current().hastext() and cr.original().text('original') == correction_out.current().text() and cr.parent.id == correction_out.parent.id ]
                 origwordtext = correction_out.current().text()
             else:
                 #insertions
@@ -120,38 +129,71 @@ def valkuileval(outfile, reffile, evaldata):
                 correction_out.alignedto = [ cr for cr in corrections_ref if (not cr.hasoriginal() or len(cr.original()) == 0) and cr.parent.id == correction_out.parent.id and ((cr.next() and next_out and cr.next().id == next_out.id) or (cr.previous() and previous_out and cr.previous().id == previous_out.id) )  ]
                 origwordtext = '(insertion)'
 
-        match = False
+        correction_out.match = False
         for correction_ref in correction_out.alignedto:
             if correction_ref.text() in ( suggestion.text() for suggestion in correction_out.suggestions() ):
                 #the reference text is in the suggestions!
-                match = True
+                correction_out.match = True
                 break
 
-        if match:
-            print(" + true positive: Reference text '" + correction_ref.text() + "' found in suggestions of " + correction_out.id,file=sys.stderr)
+        if correction_out.match:
+            print(" + true positive: Suggestion for correction '" + origwordtext + "' ->  '" + correction_ref.text() + "' matches reference ["+correction_out.annotator + ", " + correction_out.cls + "]" ,file=sys.stderr)
             evaldata.tp += 1
             evaldata.modtp[correction_out.annotator] += 1
             evaldata.clstp[correction_out.cls] += 1
         else:
             if correction_out.alignedto:
-                print(" - false positive: Corrections were suggested for '" + origwordtext + "', but none match the " +  str(len(correction_out.alignedto)) + "reference correction(s)", file=sys.stderr)
+                print(" - false positive: Corrections were suggested for '" + origwordtext + "', but none match the " +  str(len(correction_out.alignedto)) + " reference correction(s) ["+correction_out.annotator + ", " + correction_out.cls + "]" , file=sys.stderr)
             else:
-                print(" - false positive: Corrections were suggested for '" + origwordtext + "', but there are no reference corrections for this word", file=sys.stderr)
+                print(" - false positive: Corrections were suggested for '" + origwordtext + "', but there are no reference corrections for this word ["+correction_out.annotator + ", " + correction_out.cls + "]" , file=sys.stderr)
 
             evaldata.fp += 1
             evaldata.modfp[correction_out.annotator] += 1
             evaldata.clsfp[correction_out.cls] += 1
 
+        correction_out.handled = False #init next round
+
+
+    #Compute aggregated precision, all correction on the same word(s) are combined, only one needs to match
+    for correction_out in corrections_out:
+        if not correction_out.handled:
+            if isinstance(correction_out.parent, folia.Word):
+                correction_out.siblings = [ co for co in corrections_out if co.parent.id == correction_out.parent.id and co is not correction_out ]
+            else:
+                correction_out.siblings = [] #there are never multiple splits/merges in different corrections
+
+            evaldata.aggrav = (evaldata.aggrav + 1 + len(correction_out.siblings)) / 2
+            if correction_out.match or any( co.match for co in correction_out.siblings ):
+                evaldata.aggrtp += 1
+            else:
+                evaldata.aggrfp += 1
+
+            correction_out.handled = True
+            for co in correction_out.siblings:
+                co.handled = True
+
+
+
+    #Computing recall
     for correction_ref in corrections_ref:
+        if correction_ref.hasoriginal() and correction_ref.original().hastext('original'):
+            origtext = correction_ref.original().text('original')
+        else:
+            origtext = "(insertion)"
+
         if not correction_ref.hastext():
-            print("ERROR: Correction " + correction_ref.id + " has no text! Ignoring", file=sys.stderr)
+            if origtext == "(insertion)":
+                print("ERROR: Reference correction " + correction_ref.id + " has no text whatsoever! Ignoring...", file=sys.stderr)
+            else:
+                print(" - Reference correction is a deletion, ignoring: '" + origtext + "' -> (deletion)", file=sys.stderr)
             continue
+
         if isinstance(correction_ref.parent, folia.Word):
             #Correction under word,  set a custom attribute
             correction_ref.alignedto = [ co for co in corrections_out if co.parent.id == correction_ref.parent.id ]
         else:
             #insertions, merges, splits
-            correction_ref.alignedto = [ co for co in corrections_out if co.hascurrent() and co.current().hastext() and correction_ref.original().hastext() and co.current().text() == correction_ref.original().text() and co.parent.id == correction_ref.parent.id ]
+            correction_ref.alignedto = [ co for co in corrections_out if co.hascurrent() and co.current().hastext() and correction_ref.original().hastext('original') and co.current().text() == correction_ref.original().text('original') and co.parent.id == correction_ref.parent.id ]
 
         match = False
         for correction_out in correction_ref.alignedto:
@@ -162,8 +204,9 @@ def valkuileval(outfile, reffile, evaldata):
 
         if not match:
             if not correction_ref.alignedto:
-                print(" - false negative: Reference text '" + correction_ref.text() + "' (" + correction_ref.id + ") was missed alltogether in the Valkuil output",file=sys.stderr)
+                print(" - false negative: Reference correction '" + origtext  +  "' -> '" + correction_ref.text() + "' (" + correction_ref.id + ") was missed alltogether in the Valkuil output",file=sys.stderr)
                 evaldata.fn += 1
+                evaldata.aggrfn += 1
 
 
 def processdir(out, ref, evaldata):
