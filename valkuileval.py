@@ -51,29 +51,46 @@ class Evaldata():
         print("=================")
         print(" Total number of corrections in output      : ", self.tp+self.fp )
         print(" Total number of corrections in reference   : ",  self.tp+self.fn )
-        print(" Precision (micro)                          : ", round(self.tp / self.tp+self.fp,2) )
-        print(" Recall (micro)                             : ", round(self.tp / self.tp+self.fn,2) )
-        print(" F1-score (micro)                           : ", round(2*self.tp / (2*self.tp+iself.fp+self.fn),2) )
+        print(" Precision (micro)                          : ", round(self.tp / (self.tp+self.fp),2) )
+        print(" Recall (micro)                             : ", round(self.tp / (self.tp+self.fn),2) )
+        print(" F1-score (micro)                           : ", round(2*self.tp / (2*self.tp+self.fp+self.fn),2) )
         if self.modtp:
             print("")
             print("PER-MODULE RESULTS")
             print("====================")
             for module in self.modtp:
-                print("Precision for " + module + " : ", round(self.modtp[module] / self.modtp[module]+self.modfp[module],2) )
+                print("Precision for " + module + " : ", round(self.modtp[module] / (self.modtp[module]+self.modfp[module]),2) )
             print("")
         if self.clstp:
             print("")
             print("PER-CLASS RESULTS")
             print("====================")
             for cls in self.clstp:
-                print("Precision for " + cls + " : ", round(self.clstp[cls] / self.clstp[cls]+self.clsfp[cls],2) )
+                print("Precision for " + cls + " : ", round(self.clstp[cls] / (self.clstp[cls]+self.clsfp[cls]),2) )
             print("")
 
 
 
 def valkuileval(outfile, reffile, evaldata):
-    outdoc = folia.Document(file=outfile)
-    refdoc = folia.Document(file=reffile)
+
+    try:
+        outdoc = folia.Document(file=outfile)
+    except Exception as e:
+        print("Unable to read " + outfile + ": " + str(e),file=sys.stderr)
+        if settings.ignoreerrors:
+            return
+        else:
+            raise
+
+    try:
+        refdoc = folia.Document(file=reffile)
+    except Exception as e:
+        print("Unable to read " + reffile + ": " + str(e),file=sys.stderr)
+        if settings.ignoreerrors:
+            return
+        else:
+            raise
+
     if outdoc.id != refdoc.id:
         raise Exception("Mismatching document IDs for " +outfile + " and " + reffile)
 
@@ -148,8 +165,7 @@ class settings:
     extension = 'xml'
     recurse = True
     encoding = 'utf-8'
-    ignoreerrors = False
-    stdout = False
+    ignoreerrors = True
 
 def main():
     original = acceptsuggestion = output = corrected = False
