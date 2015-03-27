@@ -9,6 +9,7 @@ import os
 import glob
 import traceback
 from pynlpl.formats import folia
+from collections import defaultdict
 
 
 def usage():
@@ -39,7 +40,7 @@ def replace(correction, correctionchild):
 
 class Evaldata():
     def __init__(self):
-        self.tp = self.fp = self.np = 0
+        self.tp = self.fp = self.fn = 0
         self.modtp = defaultdict(int)
         self.modfp = defaultdict(int)
         self.clstp = defaultdict(int)
@@ -76,6 +77,8 @@ def valkuileval(outfile, reffile, evaldata):
     if outdoc.id != refdoc.id:
         raise Exception("Mismatching document IDs for " +outfile + " and " + reffile)
 
+    print("Processing " + outdoc.id,file=sys.stderr)
+
 
     corrections_out  = list(outdoc.select(folia.Correction))
     corrections_ref  = list(refdoc.select(folia.Correction))
@@ -86,8 +89,14 @@ def valkuileval(outfile, reffile, evaldata):
             #Correction under word, set a custom attribute
             correction_out.alignedto = [ cr for cr in corrections_ref if cr.parent.id == correction_out.parent.id ]
         else:
-            #insertions, merges, splits
-            correction_out.alignedto = [ cr for cr in corrections_ref if cr.original().text('original') == correction_out.current.text() and cr.parent.id == correction_out.parent.id ]
+            if correction_out.hascurrent():
+                #merges, splits
+                correction_out.alignedto = [ cr for cr in corrections_ref if cr.original().hastext() and correction_out.current().hastext() and cr.original().text() == correction_out.current().text() and cr.parent.id == correction_out.parent.id ]
+            else:
+                #insertions
+                next_out = correction_out.next(folia.Word)
+                previous_out = correction_out.previous(folia.Word)
+                correction_out.alignedto = [ cr for cr in corrections_ref if (not cr.hasoriginal() or len(cr.original()) == 0) and cr.parent.id == correction_out.parent.id and ((cr.next() and next_out and cr.next().id == next_out.id) or (cr.previous() and previous_out and cr.previous().id == previous_out.id) )  ]
 
         match = False
         for correction_ref in correction_out.alignedto:
@@ -111,7 +120,7 @@ def valkuileval(outfile, reffile, evaldata):
             correction_ref.alignedto = [ co for co in corrections_out if co.parent.id == correction_ref.parent.id ]
         else:
             #insertions, merges, splits
-            correction_out.alignedto = [ cr for cr in corrections_ref if co.current().text() == correction_ref.original().text('original') and co.parent.id == correction_ref.parent.id ]
+            correction_ref.alignedto = [ co for co in corrections_out if co.hascurrent() and co.current().hastext() and correction_ref.original().hastext() and co.current().text() == correction_ref.original().text('original') and co.parent.id == correction_ref.parent.id ]
 
         match = False
         for correction_out in correction_ref.alignedto:
@@ -129,7 +138,7 @@ def processdir(out, ref, evaldata):
     tp = fp = fn = 0
     for outfile in glob.glob(os.path.join(out ,'*')):
         reffile = outfile.replace(out,ref)
-        if file[-len(settings.extension) - 1:] == '.' + settings.extension:
+        if outfile[-len(settings.extension) - 1:] == '.' + settings.extension:
             valkuileval(outfile, reffile, evaldata)
         elif settings.recurse and os.path.isdir(reffile):
             processdir(outfile, reffile, evaldata)
