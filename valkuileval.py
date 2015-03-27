@@ -134,7 +134,7 @@ def valkuileval(outfile, reffile, evaldata):
         else:
             if correction_out.hascurrent():
                 #merges, splits
-                correction_out.alignedto = [ cr for cr in corrections_ref if cr.original().hastext('original') and correction_out.current().hastext() and cr.original().text('original') == correction_out.current().text() and cr.parent.id == correction_out.parent.id ]
+                correction_out.alignedto = [ cr for cr in corrections_ref if cr.original().hastext(None,strict=False) and correction_out.current().hastext(strict=False) and cr.original().text(None) == correction_out.current().text() and cr.parent.id == correction_out.parent.id ]
                 origwordtext = correction_out.current().text()
             else:
                 #insertions
@@ -145,10 +145,11 @@ def valkuileval(outfile, reffile, evaldata):
 
         correction_out.match = False
         for correction_ref in correction_out.alignedto:
-            if correction_ref.text() in ( suggestion.text() for suggestion in correction_out.suggestions() ):
+            if correction_ref.new().hastext() and correction_ref.new().text() in ( suggestion.text() for suggestion in correction_out.suggestions() ):
                 #the reference text is in the suggestions!
                 correction_out.match = True
                 break
+                #(deletions are filtered out)
 
         if correction_out.match:
             print(" + true positive: Suggestion for correction '" + origwordtext + "' ->  '" + correction_ref.text() + "' matches reference ["+correction_out.annotator + ", " + correction_out.cls + "]" ,file=sys.stderr)
@@ -190,12 +191,13 @@ def valkuileval(outfile, reffile, evaldata):
 
     #Computing recall
     for correction_ref in corrections_ref:
-        if correction_ref.hasoriginal() and correction_ref.original().hastext('original'):
-            origtext = correction_ref.original().text('original')
+        if correction_ref.hasoriginal() and correction_ref.original().hastext(None,strict=False):
+            origtext = correction_ref.original().text(None)
         else:
             origtext = None
 
-        if not correction_ref.hastext():
+
+        if not correction_ref.hastext(strict=False):
             if not origtext:
                 print("ERROR: Reference correction " + correction_ref.id + " has no text whatsoever! Ignoring...", file=sys.stderr)
             else:
@@ -210,7 +212,7 @@ def valkuileval(outfile, reffile, evaldata):
             correction_ref.alignedto = [ co for co in corrections_out if co.parent.id == correction_ref.parent.id ]
         else:
             #insertions, merges, splits
-            correction_ref.alignedto = [ co for co in corrections_out if co.hascurrent() and co.current().hastext() and correction_ref.original().hastext('original') and co.current().text() == correction_ref.original().text('original') and co.parent.id == correction_ref.parent.id ]
+            correction_ref.alignedto = [ co for co in corrections_out if co.hascurrent() and co.current().hastext(strict=False) and correction_ref.original().hastext(None,strict=False) and co.current().text() == correction_ref.original().text(None) and co.parent.id == correction_ref.parent.id ]
 
         match = False
         for correction_out in correction_ref.alignedto:
@@ -221,6 +223,10 @@ def valkuileval(outfile, reffile, evaldata):
 
         if not match:
             if not correction_ref.alignedto:
+                #print("ID: ", correction_ref.id,file=sys.stderr)
+                #print("HASTEXT STRICT: ", correction_ref.hastext(strict=True),file=sys.stderr)
+                #print("HASTEXT NONSTRICT: ", correction_ref.hastext(strict=False),file=sys.stderr)
+                #print("TEXT: ", correction_ref.text(),file=sys.stderr)
                 print(" - false negative: Reference correction '" + origtext  +  "' -> '" + correction_ref.text() + "' (" + correction_ref.id + ") was missed alltogether in the Valkuil output",file=sys.stderr)
                 evaldata.fn += 1
                 evaldata.aggrfn += 1
