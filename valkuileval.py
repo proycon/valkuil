@@ -1,15 +1,25 @@
 #! /usr/bin/env python3
 # -*- coding: utf8 -*-
 
+from __future__ import print_function, unicode_literals, division, absolute_import
 
-
-import getopt
 import sys
 import os
 import glob
-import traceback
 from pynlpl.formats import folia
 from collections import defaultdict
+
+
+classmap = {
+    'bekende-fout': 'nonworderror',
+    'woordenlijstfout': 'nonworderror',
+    'hoofdletter': 'capitalizationerror',
+    'punctuatie': 'missingpunctuation',
+    'klankfout': 'confusion',
+    'werkwoordfout': 'confusion',
+    'bekende-verwarring': 'confusion',
+    'fout-volgens-context': 'contexterror',
+}
 
 
 def usage():
@@ -51,14 +61,18 @@ class Evaldata():
     def output(self):
         print("OVERALL RESULTS")
         print("=================")
-        print(" Total number of corrections in output      : ", self.tp+self.fp )
+        print(" Total number of corrections in output      : ", self.tp+self.fp ),
         print(" Total number of corrections in reference   : ",  self.tp+self.fn )
+        print(" Matching corrections                       : ",  self.tp)
         print(" Precision (micro)                          : ", round(self.tp / (self.tp+self.fp),2) )
         print(" Recall (micro)                             : ", round(self.tp / (self.tp+self.fn),2) )
         print(" F1-score (micro)                           : ", round(2*self.tp / (2*self.tp+self.fp+self.fn),2) )
         print("")
         print("Aggregated corrections when they are on the same words:")
         print(" Aggregated average corrections                        : ", round(self.aggrav,2) )
+        print(" Total number of aggregated corrections in output      : ", self.aggrtp+self.aggrfp ),
+        print(" Total number of aggregated corrections in reference   : ",  self.aggrtp+self.aggrfn )
+        print(" Matching aggregated corrections                       : ",  self.aggrtp)
         print(" Aggregated precision (micro)                          : ", round(self.aggrtp / (self.aggrtp+self.aggrfp),2) )
         print(" Aggregated recall (micro)                             : ", round(self.aggrtp / (self.aggrtp+self.aggrfn),2) )
         print(" Aggregated F1-score (micro)                           : ", round(2*self.aggrtp / (2*self.aggrtp+self.aggrfp+self.aggrfn),2) )
@@ -179,14 +193,17 @@ def valkuileval(outfile, reffile, evaldata):
         if correction_ref.hasoriginal() and correction_ref.original().hastext('original'):
             origtext = correction_ref.original().text('original')
         else:
-            origtext = "(insertion)"
+            origtext = None
 
         if not correction_ref.hastext():
-            if origtext == "(insertion)":
+            if not origtext:
                 print("ERROR: Reference correction " + correction_ref.id + " has no text whatsoever! Ignoring...", file=sys.stderr)
             else:
                 print(" - Reference correction is a deletion, ignoring: '" + origtext + "' -> (deletion)", file=sys.stderr)
             continue
+
+        if not origtext:
+            origtext = "(insertion)"
 
         if isinstance(correction_ref.parent, folia.Word):
             #Correction under word,  set a custom attribute
@@ -211,7 +228,6 @@ def valkuileval(outfile, reffile, evaldata):
 
 def processdir(out, ref, evaldata):
     print("Searching in  " + out,file=sys.stderr)
-    tp = fp = fn = 0
     for outfile in glob.glob(os.path.join(out ,'*')):
         reffile = outfile.replace(out,ref)
         if outfile[-len(settings.extension) - 1:] == '.' + settings.extension:
@@ -227,8 +243,6 @@ class settings:
     ignoreerrors = True
 
 def main():
-    original = acceptsuggestion = output = corrected = False
-    setfilter = classfilter = None
 
     try:
         out = sys.argv[1]
