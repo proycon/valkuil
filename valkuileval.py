@@ -60,6 +60,7 @@ class Evaldata():
         self.modfp = defaultdict(int)
         self.clstp = defaultdict(int)
         self.clsfp = defaultdict(int)
+        self.clsfn = defaultdict(int)
         self.refclsdistr = defaultdict(int)
         self.outclsdistr = defaultdict(int)
         self.aggrav = 0
@@ -93,8 +94,11 @@ class Evaldata():
             print("")
             print("PER-CLASS RESULTS")
             print("====================")
-            for cls in self.clstp:
-                print("Precision for " + cls + " : ", round(self.clstp[cls] / (self.clstp[cls]+self.clsfp[cls]),2) )
+            for cls in sorted(set(self.clstp.keys()) | set(self.clsfn.keys())| set(self.clsfn.keys())):
+                p = round(self.clstp[cls] / (self.clstp[cls]+self.clsfp[cls]),2)
+                r = round(self.clstp[cls] / (self.clstp[cls]+self.clsfn[cls]),2)
+                f = round(2*self.clstp[cls] / (2*self.clstp[cls]+self.clsfp[cls]+self.clsfn[cls]),2)
+                print(cls + " : ", "P=" + str(p) + "\t" + "R=" + str(r) + "\t" + "F=" + str(f) )
             print("")
         print("REFERENCE CLASS DISTRIBUTION")
         print("================================")
@@ -259,6 +263,7 @@ def valkuileval(outfile, reffile, evaldata):
                 #print("TEXT: ", correction_ref.text(),file=sys.stderr)
                 print(" - false negative: Reference correction '" + origtext  +  "' -> '" + correction_ref.text() + "' (" + correction_ref.id + ") was missed alltogether in the Valkuil output",file=sys.stderr)
                 evaldata.fn += 1
+                evaldata.clsfn[correction_ref.cls] += 1
                 evaldata.aggrfn += 1
 
 
