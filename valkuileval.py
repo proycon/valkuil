@@ -10,15 +10,19 @@ from pynlpl.formats import folia
 from collections import defaultdict
 
 
-classmap = {
-    'bekende-fout': 'nonworderror',
-    'woordenlijstfout': 'nonworderror',
-    'hoofdletter': 'capitalizationerror',
-    'punctuatie': 'missingpunctuation',
-    'klankfout': 'confusion',
-    'werkwoordfout': 'confusion',
-    'bekende-verwarring': 'confusion',
-    'fout-volgens-context': 'contexterror',
+annotator2class = {
+    'errorlist': 'nonworderror',
+    'lexiconmodule': 'nonworderror',
+    'aspellmodule': 'nonworderror',
+    'soundalikemodule': 'nonworderror',
+    'splitchecker': 'spliterror',
+    'woprchecker':'confusion',
+    'd_dt_checker':'confusion',
+    'deze_dit_checker':'confusion',
+    'hard_hart_checker':'confusion',
+    'de_het_checker':'confusion',
+    'runonchecker':'runonerror',
+    #'punc_recase_checker': 'capitalizationerror',
 }
 
 
@@ -140,7 +144,18 @@ def valkuileval(outfile, reffile, evaldata):
 
     #match the ones that cover the same words
     for correction_out in corrections_out:
-        evaldata.outclsdistr[correction_out.cls] += 1
+        try:
+            if correction_out.annotator == 'punc_recase_checker': #special handling
+                ispunc = not any( [ sug.text().isalnum() for sug in correction_out.suggestions() ] )
+                if ispunc:
+                    mappedclass = 'missingpunctuation'
+                else:
+                    mappedclass = 'capitalizationerror'
+            else:
+                mappedclass = annotator2class[correction_out.annotator]
+        except KeyError:
+            mappedclass = 'uncertain'
+        evaldata.outclsdistr[mappedclass] += 1
         if isinstance(correction_out.parent, folia.Word):
             #Correction under word, set a custom attribute
             correction_out.alignedto = [ cr for cr in corrections_ref if cr.parent.id == correction_out.parent.id ]
