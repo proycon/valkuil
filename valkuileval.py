@@ -95,8 +95,14 @@ class Evaldata():
             print("PER-CLASS RESULTS")
             print("====================")
             for cls in sorted(set(self.clstp.keys()) | set(self.clsfn.keys())| set(self.clsfn.keys())):
-                p = round(self.clstp[cls] / (self.clstp[cls]+self.clsfp[cls]),2)
-                r = round(self.clstp[cls] / (self.clstp[cls]+self.clsfn[cls]),2)
+                try:
+                    p = round(self.clstp[cls] / (self.clstp[cls]+self.clsfp[cls]),2)
+                except ZeroDivisionError:
+                    p = 0
+                try:
+                    r = round(self.clstp[cls] / (self.clstp[cls]+self.clsfn[cls]),2)
+                except ZeroDivisionError:
+                    r = 0
                 f = round(2*self.clstp[cls] / (2*self.clstp[cls]+self.clsfp[cls]+self.clsfn[cls]),2)
                 print(cls + " : ", "P=" + str(p) + "\t" + "R=" + str(r) + "\t" + "F=" + str(f) )
             print("")
