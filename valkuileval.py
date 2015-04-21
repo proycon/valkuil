@@ -182,16 +182,23 @@ def valkuileval(outfile, reffile, evaldata):
                 correction_out.alignedto = [ cr for cr in corrections_ref if (not cr.hasoriginal() or len(cr.original()) == 0) and cr.parent.id == correction_out.parent.id and ((cr.next(folia.Word) and next_out and cr.next(folia.Word).id == next_out.id) or (cr.previous(folia.Word) and previous_out and cr.previous(folia.Word).id == previous_out.id) )  ]
                 origwordtext = '(insertion)'
 
+        deletion = False
         correction_out.match = False
         for correction_ref in correction_out.alignedto:
-            if correction_ref.new().hastext(strict=False) and correction_ref.new().text().strip() in ( suggestion.text().strip() for suggestion in correction_out.suggestions() ):
+            if correction_ref.new().hastext(strict=False) and correction_ref.new().text().strip() in ( suggestion.text().strip() for suggestion in correction_out.suggestions() if suggestion.hastext(strict=False) ):
                 #the reference text is in the suggestions!
                 correction_out.match = True
                 break
-                #(deletions are filtered out)
+            elif correction_ref.hasnew() and not correction_ref.new().hastext(strict=False) and any( not suggestion.hastext(strict=False) for suggestion in correction_out.suggestions() ):
+                #(we have a matching deletion)
+                correction_out.match = True
+                deletion = True
 
         if correction_out.match:
-            print(" + true positive: Suggestion for correction '" + origwordtext + "' ->  '" + correction_ref.text() + "' matches reference ["+correction_out.annotator + ", " + correction_out.cls + "]" ,file=sys.stderr)
+            if deletion:
+                print(" + true positive for deletion of '" + origwordtext + "' matches reference ["+correction_out.annotator + ", " + correction_out.cls + "]" ,file=sys.stderr)
+            else:
+                print(" + true positive: Suggestion for correction '" + origwordtext + "' ->  '" + correction_ref.text() + "' matches reference ["+correction_out.annotator + ", " + correction_out.cls + "]" ,file=sys.stderr)
             evaldata.tp += 1
             evaldata.modtp[correction_out.annotator] += 1
             evaldata.clstp[mappedclass] += 1
@@ -236,18 +243,22 @@ def valkuileval(outfile, reffile, evaldata):
         else:
             origtext = None
 
+        deletion = False
 
         if not correction_ref.hastext(strict=False):
             if not origtext:
                 print("ERROR: Reference correction " + correction_ref.id + " has no text whatsoever! Ignoring...", file=sys.stderr)
             else:
-                print(" - Reference correction is a deletion, ignoring: '" + origtext + "' -> (deletion)", file=sys.stderr)
-            continue
+                deletion = True
+                print(" - Reference correction is a deletion: '" + origtext + "' -> (deletion)", file=sys.stderr)
 
         if not origtext:
             origtext = "(insertion)"
 
-        if isinstance(correction_ref.parent, folia.Word):
+        if deletion:
+            #Deletion: Correction with suggestions in scope of word for output, Word in Correction/Original in reference
+            correction_ref.alignedto = [ co for co in corrections_out if co.parent.id == correction_ref.original().id ]
+        elif isinstance(correction_ref.parent, folia.Word):
             #Correction under word,  set a custom attribute
             correction_ref.alignedto = [ co for co in corrections_out if co.parent.id == correction_ref.parent.id ]
         else:
@@ -256,10 +267,16 @@ def valkuileval(outfile, reffile, evaldata):
 
         match = False
         for correction_out in correction_ref.alignedto:
-            if correction_ref.text() in ( suggestion.text() for suggestion in correction_out.suggestions() ):
-                #the reference text is in the suggestions!
-                match = True
-                break
+            if deletion:
+                #is there an empty suggestion? Then the deletion matches
+                if any( not suggestion.hastext() for suggestion in correction_out.suggestions() ):
+                    match = True
+                    break
+            else:
+                if correction_ref.text() in ( suggestion.text() for suggestion in correction_out.suggestions() ):
+                    #the reference text is in the suggestions!
+                    match = True
+                    break
 
         if not match:
             if not correction_ref.alignedto:
