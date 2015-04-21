@@ -739,10 +739,17 @@ class PUNC_RECASE_Checker(AbstractModule):
                         fields[1] = fields[1].strip()
 
                     if fields[1][-1] == 'C':
-                        recase = True
-                        fields[1] = fields[1][:-1] #script the c
+                        recaseup = True
+                        fields[1] = fields[1][:-1] #strip the c
+                    if fields[1][-1] == 'c':
+                        recasedown = True
+                        fields[1] = fields[1][:-1] #strip the c
 
-                    if fields[1]:
+
+                    if fields[1] == '-':
+                        self.addcorrection(word, suggestions=[], cls='punctuatie', annotator=self.NAME) #empty suggestion implies deletion
+
+                    elif fields[1]:
                         punctuation = fields[1]
                         #if punctuation in EOS and prevword: #EOS is currenly empty and sentence-splits are not supported yet, will be in gecco
                         #    #punctuation causes a sentence split!!
@@ -777,11 +784,13 @@ class PUNC_RECASE_Checker(AbstractModule):
                         word.parent.insert(index,folia.Correction(doc, folia.Suggestion(doc, folia.Word(doc,punctuation,generate_id_in=word.parent)), set='valkuilset', cls='punctuatie',annotator=self.NAME,annotatortype=folia.AnnotatorType.AUTO, generate_id_in=word.parent))
 
                         #nospace setting on prevword not included in the suggestions, can be set when a correction is accepted
-                    if recase:
+                    if recaseup or recasedown:
                         #recase word
                         t = word.text()
-                        if recase:
+                        if recaseup:
                             t = t[0].upper() + t[1:]
+                        elif recasedown:
+                            t = t[0].lower() + t[1:]
                         self.addcorrection(word, suggestions=[t], cls='hoofdletter', annotator=self.NAME)
 
                 prevword = word
