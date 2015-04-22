@@ -734,7 +734,7 @@ class PUNC_RECASE_Checker(AbstractModule):
             prevword = None
             for word, fields in self.readcolumnedoutput(self.outputdir + 'punc-recase_checker.test.out'):
                 if len(fields) >= 2:
-                    recase = False
+                    recaseup = recasedown = False
                     if fields[1].strip():
                         fields[1] = fields[1].strip()
 
