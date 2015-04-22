@@ -735,70 +735,70 @@ class PUNC_RECASE_Checker(AbstractModule):
             for word, fields in self.readcolumnedoutput(self.outputdir + 'punc-recase_checker.test.out'):
                 if len(fields) >= 2:
                     recase = False
-                    if fields[1]:
+                    if fields[1].strip():
                         fields[1] = fields[1].strip()
 
-                    if fields[1][-1] == 'C':
-                        recaseup = True
-                        fields[1] = fields[1][:-1] #strip the c
-                    if fields[1][-1] == 'c':
-                        recasedown = True
-                        fields[1] = fields[1][:-1] #strip the c
+                        if fields[1][-1] == 'C':
+                            recaseup = True
+                            fields[1] = fields[1][:-1] #strip the c
+                        if fields[1] and fields[1][-1] == 'c':
+                            recasedown = True
+                            fields[1] = fields[1][:-1] #strip the c
 
 
-                    if fields[1] == '-':
-                        self.addcorrection(word, suggestions=[], cls='punctuatie', annotator=self.NAME) #empty suggestion implies deletion
+                        if fields[1] == '-':
+                            self.addcorrection(word, suggestions=[], cls='punctuatie', annotator=self.NAME) #empty suggestion implies deletion
 
-                    elif fields[1]:
-                        #if punctuation in EOS and prevword: #EOS is currenly empty and sentence-splits are not supported yet, will be in gecco
-                        #    #punctuation causes a sentence split!!
-                        #    assert word.sentence() is prevword.sentence()
-                        #    parent = prevword.sentence().ancestor(folia.StructureElement)
-                        #    sentence1 = folia.Sentence(self.doc, generate_id_in=parent)
-                        #    sentence2 = folia.Sentence(self.doc, generate_id_in=parent)
-                        #    target = sentence1
-                        #    for w in word.sentence():
-                        #        if w is word:
-                        #            target = sentence2
-                        #        w = w.copy(self.doc) #make a deep copy
-                        #        #generate new ID for each word
-                        #        w.id = target.generate_id(w.__class__)
-                        #        target.append(w)
+                        elif fields[1]:
+                            #if punctuation in EOS and prevword: #EOS is currenly empty and sentence-splits are not supported yet, will be in gecco
+                            #    #punctuation causes a sentence split!!
+                            #    assert word.sentence() is prevword.sentence()
+                            #    parent = prevword.sentence().ancestor(folia.StructureElement)
+                            #    sentence1 = folia.Sentence(self.doc, generate_id_in=parent)
+                            #    sentence2 = folia.Sentence(self.doc, generate_id_in=parent)
+                            #    target = sentence1
+                            #    for w in word.sentence():
+                            #        if w is word:
+                            #            target = sentence2
+                            #        w = w.copy(self.doc) #make a deep copy
+                            #        #generate new ID for each word
+                            #        w.id = target.generate_id(w.__class__)
+                            #        target.append(w)
 
-                        #    #append the missing punctuation
-                        #    sentence1.words(-1).space = False  #last word before punctuation needs no space
-                        #    sentence1.append( folia.Word(self.doc, generate_id_in=sentence1, text=punctuation) )
+                            #    #append the missing punctuation
+                            #    sentence1.words(-1).space = False  #last word before punctuation needs no space
+                            #    sentence1.append( folia.Word(self.doc, generate_id_in=sentence1, text=punctuation) )
 
-                        #    if recase:
-                        #        #we don't generate yet another correction element since this is already part of the sentence split:
-                        #        textcontent = sentence2.words(0).textcontent()
-                        #        textcontent.value = textcontent.value[0].upper() + textcontent.value[1:]
+                            #    if recase:
+                            #        #we don't generate yet another correction element since this is already part of the sentence split:
+                            #        textcontent = sentence2.words(0).textcontent()
+                            #        textcontent.value = textcontent.value[0].upper() + textcontent.value[1:]
 
-                        #    sentence.split(*[sentence1,sentence2], cls='punctuatie-hoofdletter', annotator=self.NAME,suggest=True, datetime=datetime.datetime.now() )
-                        #else:
+                            #    sentence.split(*[sentence1,sentence2], cls='punctuatie-hoofdletter', annotator=self.NAME,suggest=True, datetime=datetime.datetime.now() )
+                            #else:
 
-                        insertion = word.text().isalnum()
+                            insertion = word.text().isalnum()
 
-                        punctuation = fields[1]
+                            punctuation = fields[1]
 
-                        if insertion:
-                            #prepend punctuation (insertion)
-                            index = word.parent.getindex(word)
-                            doc = word.doc
-                            word.parent.insert(index,folia.Correction(doc, folia.Suggestion(doc, folia.Word(doc,punctuation,generate_id_in=word.parent)), set='valkuilset', cls='punctuatie',annotator=self.NAME,annotatortype=folia.AnnotatorType.AUTO, generate_id_in=word.parent))
-                        else:
-                            #confusible
-                            self.addcorrection(word, suggestions=[punctuation], cls='punctuatie', annotator=self.NAME)
+                            if insertion:
+                                #prepend punctuation (insertion)
+                                index = word.parent.getindex(word)
+                                doc = word.doc
+                                word.parent.insert(index,folia.Correction(doc, folia.Suggestion(doc, folia.Word(doc,punctuation,generate_id_in=word.parent)), set='valkuilset', cls='punctuatie',annotator=self.NAME,annotatortype=folia.AnnotatorType.AUTO, generate_id_in=word.parent))
+                            else:
+                                #confusible
+                                self.addcorrection(word, suggestions=[punctuation], cls='punctuatie', annotator=self.NAME)
 
-                        #nospace setting on prevword not included in the suggestions, can be set when a correction is accepted
-                    if recaseup or recasedown:
-                        #recase word
-                        t = word.text()
-                        if recaseup:
-                            t = t[0].upper() + t[1:]
-                        elif recasedown:
-                            t = t[0].lower() + t[1:]
-                        self.addcorrection(word, suggestions=[t], cls='hoofdletter', annotator=self.NAME)
+                            #nospace setting on prevword not included in the suggestions, can be set when a correction is accepted
+                        if recaseup or recasedown:
+                            #recase word
+                            t = word.text()
+                            if recaseup:
+                                t = t[0].upper() + t[1:]
+                            elif recasedown:
+                                t = t[0].lower() + t[1:]
+                            self.addcorrection(word, suggestions=[t], cls='hoofdletter', annotator=self.NAME)
 
                 prevword = word
 
