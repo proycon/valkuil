@@ -750,7 +750,6 @@ class PUNC_RECASE_Checker(AbstractModule):
                         self.addcorrection(word, suggestions=[], cls='punctuatie', annotator=self.NAME) #empty suggestion implies deletion
 
                     elif fields[1]:
-                        punctuation = fields[1]
                         #if punctuation in EOS and prevword: #EOS is currenly empty and sentence-splits are not supported yet, will be in gecco
                         #    #punctuation causes a sentence split!!
                         #    assert word.sentence() is prevword.sentence()
@@ -778,10 +777,18 @@ class PUNC_RECASE_Checker(AbstractModule):
                         #    sentence.split(*[sentence1,sentence2], cls='punctuatie-hoofdletter', annotator=self.NAME,suggest=True, datetime=datetime.datetime.now() )
                         #else:
 
-                        #prepend punctuation (insertion)
-                        index = word.parent.getindex(word)
-                        doc = word.doc
-                        word.parent.insert(index,folia.Correction(doc, folia.Suggestion(doc, folia.Word(doc,punctuation,generate_id_in=word.parent)), set='valkuilset', cls='punctuatie',annotator=self.NAME,annotatortype=folia.AnnotatorType.AUTO, generate_id_in=word.parent))
+                        insertion = word.text().isalnum()
+
+                        punctuation = fields[1]
+
+                        if insertion:
+                            #prepend punctuation (insertion)
+                            index = word.parent.getindex(word)
+                            doc = word.doc
+                            word.parent.insert(index,folia.Correction(doc, folia.Suggestion(doc, folia.Word(doc,punctuation,generate_id_in=word.parent)), set='valkuilset', cls='punctuatie',annotator=self.NAME,annotatortype=folia.AnnotatorType.AUTO, generate_id_in=word.parent))
+                        else:
+                            #confusible
+                            self.addcorrection(word, suggestions=[punctuation], cls='punctuatie', annotator=self.NAME)
 
                         #nospace setting on prevword not included in the suggestions, can be set when a correction is accepted
                     if recaseup or recasedown:
