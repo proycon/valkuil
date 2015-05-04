@@ -747,6 +747,7 @@ class PUNC_RECASE_Checker(AbstractModule):
 
 
                         if fields[1] == '-':
+                            print >>sys.stderr, "DEBUG punc-recase: suggestion for deletion for " + word.id
                             self.addcorrection(word, suggestions=[], cls='punctuatie', annotator=self.NAME) #empty suggestion implies deletion
 
                         elif fields[1]:
@@ -785,9 +786,11 @@ class PUNC_RECASE_Checker(AbstractModule):
                                 #prepend punctuation (insertion)
                                 index = word.parent.getindex(word)
                                 doc = word.doc
+                                print >>sys.stderr, "DEBUG punc-recase: punctuation insertion for " + word.id + " @" + str(index)
                                 word.parent.insert(index,folia.Correction(doc, folia.Suggestion(doc, folia.Word(doc,punctuation,generate_id_in=word.parent)), folia.Current(doc), set='valkuilset', cls='punctuatie',annotator=self.NAME,annotatortype=folia.AnnotatorType.AUTO, generate_id_in=word.parent))
                             else:
                                 #confusible
+                                print >>sys.stderr, "DEBUG punc-recase: punctuation confusible for " + word.id
                                 self.addcorrection(word, suggestions=[punctuation], cls='punctuatie', annotator=self.NAME)
 
                             #nospace setting on prevword not included in the suggestions, can be set when a correction is accepted
