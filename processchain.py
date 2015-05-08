@@ -117,9 +117,12 @@ class AbstractModule(object): #Do not modify
     def suggestdeletion(self, word, **kwargs  ):
         index = word.parent.getindex(word)
         if index != -1:
-            word.parent.data[index] = folia.Correction(word.doc, folia.Suggestion(word.doc), folia.Current(word.doc, word), set='valkuilset',cls='punctuatie', annotator=kwargs['annotator'],annotatortype=folia.AnnotatorType.AUTO, datetime=datetime.datetime.now())
+            try:
+                word.parent.data[index] = folia.Correction(word.doc, folia.Suggestion(word.doc), folia.Current(word.doc, word), set='valkuilset',cls='punctuatie', annotator=kwargs['annotator'],annotatortype=folia.AnnotatorType.AUTO, datetime=datetime.datetime.now())
+            except IndexError:
+                self.errout("[suggestdeletion] ERROR: Index " + str(index) + " not found!")
         else:
-            self.errout("Index for word " + word.id + " not found!")
+            self.errout("[suggestdeletion] ERROR: Index for word " + word.id + " not found!")
 
 
     def adderrordetection(self, word, **kwargs):
