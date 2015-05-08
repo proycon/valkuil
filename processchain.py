@@ -115,7 +115,7 @@ class AbstractModule(object): #Do not modify
             raise Exception("No suggestions= specified!")
 
     def suggestdeletion(self, word, **kwargs  ):
-        index = word.parent.getindex(word)
+        index = word.parent.getindex(word,False)
         if index != -1:
             try:
                 word.parent.data[index] = folia.Correction(word.doc, folia.Suggestion(word.doc), folia.Current(word.doc, word), set='valkuilset',cls='punctuatie', annotator=kwargs['annotator'],annotatortype=folia.AnnotatorType.AUTO, datetime=datetime.datetime.now())
