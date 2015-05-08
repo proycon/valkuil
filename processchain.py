@@ -115,12 +115,10 @@ class AbstractModule(object): #Do not modify
             raise Exception("No suggestions= specified!")
 
     def suggestdeletion(self, word, **kwargs  ):
-        index = word.parent.getindex(word,False)
+        parent = word.parent
+        index = parent.getindex(word,False)
         if index != -1:
-            try:
-                word.parent.data[index] = folia.Correction(word.doc, folia.Suggestion(word.doc), folia.Current(word.doc, word), set='valkuilset',cls='punctuatie', annotator=kwargs['annotator'],annotatortype=folia.AnnotatorType.AUTO, datetime=datetime.datetime.now())
-            except IndexError:
-                self.errout("[suggestdeletion] ERROR: Index " + str(index) + " not found!")
+            parent.data[index] = folia.Correction(word.doc, folia.Suggestion(word.doc), folia.Current(word.doc, word), set='valkuilset',cls='punctuatie', annotator=kwargs['annotator'],annotatortype=folia.AnnotatorType.AUTO, datetime=datetime.datetime.now())
         else:
             self.errout("[suggestdeletion] ERROR: Index for word " + word.id + " not found!")
 
