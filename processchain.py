@@ -747,8 +747,9 @@ class PUNC_RECASE_Checker(AbstractModule):
 
 
                         if fields[1] == '-':
-                            print >>sys.stderr, "DEBUG punc-recase: suggestion for deletion for " + word.id
-                            self.addcorrection(word, suggestions=[], cls='punctuatie', annotator=self.NAME) #empty suggestion implies deletion
+                            if prevword:
+                                print >>sys.stderr, "DEBUG punc-recase: suggestion for deletion for " + prevword.id
+                                self.addcorrection(prevword, suggestions=[], cls='punctuatie', annotator=self.NAME) #empty suggestion implies deletion
 
                         elif fields[1]:
                             #if punctuation in EOS and prevword: #EOS is currenly empty and sentence-splits are not supported yet, will be in gecco
