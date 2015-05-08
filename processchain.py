@@ -114,6 +114,9 @@ class AbstractModule(object): #Do not modify
         else:
             raise Exception("No suggestions= specified!")
 
+    def suggestdeletion(self, word, **kwargs  ):
+        index = word.parent.getindex(word)
+        word.parent.data[index] = folia.Correction(word.doc, folia.Suggestion(word.doc), folia.Current(word.doc, word), set='valkuilset',cls='punctuatie', annotator=kwargs['annotator'],annotatortype=folia.AnnotatorType.AUTO, datetime=datetime.datetime.now())
 
     def adderrordetection(self, word, **kwargs):
         self.errout("Adding correction for " + word.id + " " + word.text())
@@ -749,7 +752,7 @@ class PUNC_RECASE_Checker(AbstractModule):
                         if fields[1] == '-':
                             if prevword:
                                 print >>sys.stderr, "DEBUG punc-recase: suggestion for deletion for " + prevword.id
-                                self.addcorrection(prevword, suggestions=[], cls='punctuatie', annotator=self.NAME) #empty suggestion implies deletion
+                                self.suggestdeletion(prevword, cls='punctuatie', annotator=self.NAME) #empty suggestion implies deletion
 
                         elif fields[1]:
                             #if punctuation in EOS and prevword: #EOS is currenly empty and sentence-splits are not supported yet, will be in gecco
