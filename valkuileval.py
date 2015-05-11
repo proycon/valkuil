@@ -205,7 +205,7 @@ def valkuileval(outfile, reffile, evaldata):
                 correction_out.match = True
                 correction_ref.match = True
                 match = correction_ref
-            elif correction_ref.hasnew() and not correction_ref.new().hastext(strict=False) and any( not suggestion.hastext(strict=False) for suggestion in correction_out.suggestions() ):
+            elif correction_ref.hasnew(True) and not correction_ref.new().hastext(strict=False) and any( not suggestion.hastext(strict=False) for suggestion in correction_out.suggestions() ):
                 #(we have a matching deletion)
                 correction_out.match = True
                 correction_ref.match = True
