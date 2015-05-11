@@ -287,7 +287,7 @@ def valkuileval(outfile, reffile, evaldata):
                     match = True
                     break
             else:
-                if correction_ref.text() in ( suggestion.text() for suggestion in correction_out.suggestions() ):
+                if correction_ref.text() in ( suggestion.text() for suggestion in correction_out.suggestions() if suggestion.hastext() ):
                     #the reference text is in the suggestions!
                     match = True
                     break
