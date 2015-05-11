@@ -26,6 +26,12 @@ annotator2class = {
 }
 
 
+def getrandomid(doc,prefix="C"):
+    randomid = ""
+    while not randomid or randomid in doc.index:
+        randomid =  prefix + "%08x" % random.getrandbits(32) #generate a random ID
+    return randomid
+
 def usage():
     print("valkuileval", file=sys.stderr)
     print("  by Maarten van Gompel (proycon)", file=sys.stderr)
@@ -154,6 +160,9 @@ def valkuileval(outfile, reffile, evaldata):
 
     #match the ones that cover the same words
     for correction_out in corrections_out:
+        if not correction_out.id:
+            #ensure all correctons have an ID
+            correction_out.id = getrandomid(correction_out.doc)
         try:
             if correction_out.annotator == 'punc_recase_checker': #special handling
                 deletion = any( [ not sug.hastext() for sug in correction_out.suggestions() ])
@@ -210,7 +219,7 @@ def valkuileval(outfile, reffile, evaldata):
             if correction_out.alignedto:
                 print(" - false positive: Corrections were suggested for '" + origwordtext + "', (" + correction_out.id + ") but none match the " +  str(len(correction_out.alignedto)) + " reference correction(s) ["+correction_out.annotator + ", " + correction_out.cls + "]" , file=sys.stderr)
             else:
-                print(" - false positive: Corrections were suggested for '" + str(origwordtext) + "', (" + str(correction_out.id) + ") but there are no reference corrections for this word ["+correction_out.annotator + ", " + correction_out.cls + "]" , file=sys.stderr)
+                print(" - false positive: Corrections were suggested for '" + origwordtext + "', (" + correction_out.id + ") but there are no reference corrections for this word ["+correction_out.annotator + ", " + correction_out.cls + "]" , file=sys.stderr)
 
             evaldata.fp += 1
             evaldata.modfp[correction_out.annotator] += 1
