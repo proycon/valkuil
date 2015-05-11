@@ -198,21 +198,25 @@ def valkuileval(outfile, reffile, evaldata):
 
         deletion = False
         correction_out.match = False
+        match = None
         for correction_ref in correction_out.alignedto:
             if correction_ref.new().hastext(strict=False) and correction_ref.new().text().strip() in ( suggestion.text().strip() for suggestion in correction_out.suggestions() if suggestion.hastext(strict=False) ):
                 #the reference text is in the suggestions!
                 correction_out.match = True
-                break
+                correction_ref.match = True
+                match = correction_ref
             elif correction_ref.hasnew() and not correction_ref.new().hastext(strict=False) and any( not suggestion.hastext(strict=False) for suggestion in correction_out.suggestions() ):
                 #(we have a matching deletion)
                 correction_out.match = True
+                correction_ref.match = True
+                match = correction_ref
                 deletion = True
 
-            if not hasattr(correction_ref, 'alignedto'): correction_ref.alignedto = []
-            if not correction_out in correction_ref.alignedto: correction_ref.alignedto.append(correction_out)
+            if match is correction_ref:
+                if not hasattr(correction_ref, 'alignedto'): correction_ref.alignedto = []
+                if not correction_out in correction_ref.alignedto: correction_ref.alignedto.append(correction_out)
 
-            if correction_out.match:
-                correction_ref.match = True
+        correction_ref = match
 
         if correction_out.match:
             if deletion:
