@@ -299,8 +299,8 @@ def valkuileval(outfile, reffile, evaldata):
         #            match = True
         #            break
 
-        if not correction_ref.match:
-            if not correction_ref.alignedto:
+        if not hasattr(correction_ref,'match') or not correction_ref.match:
+            if not hasattr(correction_ref, 'alignedto') or not correction_ref.alignedto:
                 #print("ID: ", correction_ref.id,file=sys.stderr)
                 #print("HASTEXT STRICT: ", correction_ref.hastext(strict=True),file=sys.stderr)
                 #print("HASTEXT NONSTRICT: ", correction_ref.hastext(strict=False),file=sys.stderr)
