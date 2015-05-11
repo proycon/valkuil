@@ -156,11 +156,15 @@ def valkuileval(outfile, reffile, evaldata):
     for correction_out in corrections_out:
         try:
             if correction_out.annotator == 'punc_recase_checker': #special handling
-                ispunc = not any( [ sug.text().isalnum() for sug in correction_out.suggestions() ] )
-                if ispunc:
-                    mappedclass = 'missingpunctuation'
+                deletion = any( [ not sug.hastext() for sug in correction_out.suggestions() ])
+                if deletion:
+                    mappedclass = 'redundantpunctuation'
                 else:
-                    mappedclass = 'capitalizationerror'
+                    ispunc = not any( [ sug.text().isalnum() for sug in correction_out.suggestions() if sug.hastext() ] )
+                    if ispunc:
+                        mappedclass = 'missingpunctuation'
+                    else:
+                        mappedclass = 'capitalizationerror'
             else:
                 mappedclass = annotator2class[correction_out.annotator]
         except KeyError:
