@@ -210,7 +210,7 @@ def valkuileval(outfile, reffile, evaldata):
             if correction_out.alignedto:
                 print(" - false positive: Corrections were suggested for '" + origwordtext + "', (" + correction_out.id + ") but none match the " +  str(len(correction_out.alignedto)) + " reference correction(s) ["+correction_out.annotator + ", " + correction_out.cls + "]" , file=sys.stderr)
             else:
-                print(" - false positive: Corrections were suggested for '" + origwordtext + "', (" + correction_out.id + ") but there are no reference corrections for this word ["+correction_out.annotator + ", " + correction_out.cls + "]" , file=sys.stderr)
+                print(" - false positive: Corrections were suggested for '" + str(origwordtext) + "', (" + str(correction_out.id) + ") but there are no reference corrections for this word ["+correction_out.annotator + ", " + correction_out.cls + "]" , file=sys.stderr)
 
             evaldata.fp += 1
             evaldata.modfp[correction_out.annotator] += 1
