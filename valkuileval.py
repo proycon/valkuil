@@ -208,6 +208,12 @@ def valkuileval(outfile, reffile, evaldata):
                 correction_out.match = True
                 deletion = True
 
+            if not hasattr(correction_ref, 'alignedto'): correction_ref.alignedto = []
+            if not correction_out in correction_ref.alignedto: correction_ref.alignedto.append(correction_out)
+
+            if correction_out.match:
+                correction_ref.match = True
+
         if correction_out.match:
             if deletion:
                 print(" + true positive for deletion of '" + origwordtext + "' matches reference ["+correction_out.annotator + ", " + correction_out.cls + "]" ,file=sys.stderr)
@@ -266,33 +272,34 @@ def valkuileval(outfile, reffile, evaldata):
                 deletion = True
                 print(" - Reference correction is a deletion: '" + origtext + "' -> (deletion)", file=sys.stderr)
 
+
         if not origtext:
             origtext = "(insertion)"
 
-        if deletion:
-            #Deletion: Correction with suggestions in scope of word for output, Word in Correction/Original in reference
-            correction_ref.alignedto = [ co for co in corrections_out if co.parent.id == correction_ref.original().id ]
-        elif isinstance(correction_ref.parent, folia.Word):
-            #Correction under word,  set a custom attribute
-            correction_ref.alignedto = [ co for co in corrections_out if co.parent.id == correction_ref.parent.id ]
-        else:
-            #insertions, merges, splits
-            correction_ref.alignedto = [ co for co in corrections_out if co.hascurrent() and co.current().hastext(strict=False) and correction_ref.original().hastext(None,strict=False) and co.current().text() == correction_ref.original().text(None) and co.parent.id == correction_ref.parent.id ]
+        #if deletion:
+        #    #Deletion: Correction with suggestions in scope of word for output, Word in Correction/Original in reference
+        #    correction_ref.alignedto = [ co for co in corrections_out if co.parent.id == correction_ref.original().id ]
+        #elif isinstance(correction_ref.parent, folia.Word):
+        #    #Correction under word,  set a custom attribute
+        #    correction_ref.alignedto = [ co for co in corrections_out if co.parent.id == correction_ref.parent.id ]
+        #else:
+        #    #insertions, merges, splits
+        #    correction_ref.alignedto = [ co for co in corrections_out if co.hascurrent() and co.current().hastext(strict=False) and correction_ref.original().hastext(None,strict=False) and co.current().text() == correction_ref.original().text(None) and co.parent.id == correction_ref.parent.id ]
 
-        match = False
-        for correction_out in correction_ref.alignedto:
-            if deletion:
-                #is there an empty suggestion? Then the deletion matches
-                if any( not suggestion.hastext() for suggestion in correction_out.suggestions() ):
-                    match = True
-                    break
-            else:
-                if correction_ref.text() in ( suggestion.text() for suggestion in correction_out.suggestions() if suggestion.hastext() ):
-                    #the reference text is in the suggestions!
-                    match = True
-                    break
+        #match = False
+        #for correction_out in correction_ref.alignedto:
+        #    if deletion:
+        #        #is there an empty suggestion? Then the deletion matches
+        #        if any( not suggestion.hastext() for suggestion in correction_out.suggestions() ):
+        #            match = True
+        #            break
+        #    else:
+        #        if correction_ref.text() in ( suggestion.text() for suggestion in correction_out.suggestions() if suggestion.hastext() ):
+        #            #the reference text is in the suggestions!
+        #            match = True
+        #            break
 
-        if not match:
+        if not correction_ref.match:
             if not correction_ref.alignedto:
                 #print("ID: ", correction_ref.id,file=sys.stderr)
                 #print("HASTEXT STRICT: ", correction_ref.hastext(strict=True),file=sys.stderr)
