@@ -406,7 +406,7 @@ class T_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/t_checker 0.975 ' + self.rootdir + 'spellmods/ValkuilLexicon.1.1.t ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 't_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/t_checker ' + str(self.threshold) + self.rootdir + 'spellmods/ValkuilLexicon.1.1.t ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 't_checker.test.out')
 
 
 
@@ -576,7 +576,7 @@ class DIE_WELKE_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker die welke 0.925 ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'die-welke_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker die welke ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'die-welke_checker.test.out')
 
 
 class HEN_HUN_Checker(AbstractModule):
@@ -612,7 +612,7 @@ class DE_HET_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker de het 0.98 ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'de-het_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker de het ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'de-het_checker.test.out')
 
 
 class HUN_ZIJ_Checker(AbstractModule):
@@ -1116,7 +1116,7 @@ elif sys.argv[1] == 'process_sentence':
     os.mkdir(tmpdir)
     with io.open(tmpdir + '/sentence.txt', 'w', encoding='utf-8') as f:
         f.write(sentence)
-    threshold = 0.95
+    threshold = 0.75
 
     doc = process(tmpdir + '/sentence.txt', tmpdir, rootdir, bindir, statusfile, modules, threshold,standalone, False)
     print json.dumps(folia2json(doc))
@@ -1135,7 +1135,7 @@ else:
     try:
         threshold = int(sys.argv[3])
     except:
-        threshold = 0.95
+        threshold = 0.75
     rootdir = ''
     outputdir = '' #stdout
     statusfile = None
