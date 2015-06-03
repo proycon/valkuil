@@ -158,11 +158,14 @@ class AbstractModule(object): #Do not modify
         kwargs['suggest'] = True
         kwargs['datetime'] = datetime.datetime.now()
         kwargs['set'] = 'valkuilset'
-        sentence.mergewords(
-            newword,
-            *originalwords,
-            **kwargs
-        )
+        try:
+            sentence.mergewords(
+                newword,
+                *originalwords,
+                **kwargs
+            )
+        except:
+            print >>sys.stderr, "ERROR DURING mergecorrection ... SKIPPING FOR NOW"
 
 
 
@@ -1074,7 +1077,7 @@ try:
     standalone = False
 except ImportError:
     standalone = True
-    print sys.stderr, "WARNING: CLAM modules not found, trying to run standalone...."
+    print >>sys.stderr, "WARNING: CLAM modules not found, trying to run standalone...."
 
 id = None
 bindir = ''
