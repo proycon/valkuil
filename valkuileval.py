@@ -178,6 +178,7 @@ def valkuileval(outfile, reffile, evaldata):
             else:
                 mappedclass = annotator2class[correction_out.annotator]
         except KeyError:
+            print("WARNING: Unknown class " + correction_out.annotator + " in output, mapping to 'uncertain'...",file=sys.stderr)
             mappedclass = 'uncertain'
         evaldata.outclsdistr[mappedclass] += 1
         if isinstance(correction_out.parent, folia.Word):
