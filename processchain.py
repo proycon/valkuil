@@ -991,7 +991,10 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
 
     f = io.open(outputdir + 'input.tok.txt','w',encoding='utf-8')
     for currentword in doc.words():
-        f.write( unicode(currentword) + ' ')
+        try:
+            f.write( unicode(currentword) + ' ')
+        except folia.NoSuchText:
+            raise folia.NoSuchText("No text for " + str(currentword.id) + "!")
     f.close()
 
     f = io.open(outputdir + 'agreement_checker.test.inst','w', encoding='utf-8')
