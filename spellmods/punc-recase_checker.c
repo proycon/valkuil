@@ -250,8 +250,10 @@ int main(int argc, char *argv[])
                       (max/total<1.0)&&
                       (total>MINOCC))
                     {
-		      if (strcmp(category,realout)!=0)
+		      if ((strcmp(category,realout)!=0)&&
+			  (strcmp(category,"-")!=0))
 			{
+			 
 			  fprintf(stdout," %s",
 				  category);
 			  fprintf(stderr,"line: %s",
