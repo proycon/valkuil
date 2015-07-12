@@ -615,7 +615,7 @@ class DE_HET_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/confusible_checker de het ' + str(self.threshold) + ' ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'de-het_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/confusible_checker de het 0.95 ' + self.outputdir + 'agreement_checker.test.inst > ' + self.outputdir + 'de-het_checker.test.out')
 
 
 class HUN_ZIJ_Checker(AbstractModule):
@@ -820,7 +820,7 @@ class PUNC_RECASE_Checker(AbstractModule):
 
     def run(self):
         #Call module and ask it to produce output
-        self.runcmd(self.rootdir + 'spellmods/punc-recase_checker 0.8 ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'punc-recase_checker.test.out')
+        self.runcmd(self.rootdir + 'spellmods/punc-recase_checker 0.75 ' + self.outputdir + 'input.tok.txt > ' + self.outputdir + 'punc-recase_checker.test.out')
 
 
 class TE_TEN_Checker(AbstractModule):
