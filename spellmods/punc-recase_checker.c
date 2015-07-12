@@ -13,8 +13,8 @@
 #define PORT "2000"
 #define MACHINE "localhost"
 #define NRFEAT 7
-#define MINOCC 10.
-#define DEBUG 1
+#define MINOCC 5.
+#define DEBUG 0
 
 int main(int argc, char *argv[])
 {
@@ -80,6 +80,7 @@ int main(int argc, char *argv[])
   strcpy(cap,"");
   for (i=0; i<NRFEAT; i++)
     {
+      strcpy(membuffer[i],"_");
       strcpy(buffer[i],"_");
       strcpy(punc[i],"NP");
       strcat(cap," ");
@@ -100,8 +101,14 @@ int main(int argc, char *argv[])
 
       if ((counter>(NRFEAT/2)-1)&&
 	  (defcon<=NRFEAT/2))
-	fprintf(stdout,"%s",
-		membuffer[(NRFEAT/2)-1]);
+	{
+	  
+	  fprintf(stdout,"%s",
+		  membuffer[(NRFEAT/2)-1]);
+	  if (DEBUG)
+	    fprintf(stderr,"original token: [%s]\n",
+		    membuffer[(NRFEAT/2)-1]);
+	}
       for (i=NRFEAT; i>0; i--)
 	strcpy(membuffer[i],membuffer[i-1]);
       strcpy(membuffer[0],readbuffer);
@@ -122,157 +129,197 @@ int main(int argc, char *argv[])
         }
 
       if (strstr(puncstring,readbuffer))
-        {
-          strcpy(punc[NRFEAT-1],readbuffer);
-        }
+	{
+	  strcpy(punc[NRFEAT-1],readbuffer);
+	}
       else
-        {
-          for (i=0; i<NRFEAT-1; i++)
-            {
-              strcpy(buffer[i],buffer[i+1]);
-              strcpy(punc[i],punc[i+1]);
-              cap[i]=cap[i+1];
-            }
-          strcpy(buffer[NRFEAT-1],locap);
-          strcpy(punc[NRFEAT-1],"NP");
-          if (capped)
-            cap[NRFEAT-1]='C';
-          else
-            cap[NRFEAT-1]='-';
-          if (counter>2)
-            {
-
-	      strcpy(classifyline,"c ");
-
-              for (i=0; i<NRFEAT-1; i++)
-                {
-		  strcat(classifyline,buffer[i]);
-		  strcat(classifyline," ");
-                }
-
-              if (strcmp(punc[2],"NP")!=0)
-                {
-                  if (cap[3]!='-')
+	{
+	  for (i=0; i<NRFEAT-1; i++)
+	    {
+	      strcpy(buffer[i],buffer[i+1]);
+	      strcpy(punc[i],punc[i+1]);
+	      cap[i]=cap[i+1];
+	    }
+	  strcpy(buffer[NRFEAT-1],locap);
+	  if (capped)
+	    cap[NRFEAT-1]='C';
+	  else
+	    cap[NRFEAT-1]='-';
+	  strcpy(punc[NRFEAT-1],"NP");
+      
+	  if (DEBUG)
+	    fprintf(stderr,"checking [%s]-[%c]-[%s]\n",
+		    buffer[(NRFEAT/2)],
+		    cap[(NRFEAT/2)],
+		    punc[(NRFEAT/2)]);
+	  
+	  
+	  if (counter>2)
+	    {
+	      if (strcmp(punc[(NRFEAT/2)],"NP")==0)
+		{
+		  if (DEBUG)
 		    {
-		      strcat(classifyline,punc[2]);
-		      strcpy(realout,punc[2]);
-		      strcat(classifyline,"C\n");
-		      strcat(realout,"C");
+		      fprintf(stderr,"\nbuffer:");
+		      for (i=0; i<NRFEAT; i++)
+			fprintf(stderr," [%10s]",
+				buffer[i]);
+		      fprintf(stderr,"\n");
+		      
+		      fprintf(stderr,"cap:   ");
+		      for (i=0; i<NRFEAT; i++)
+			fprintf(stderr," [%10c]",
+				cap[i]);
+		      fprintf(stderr,"\n");
+		      
+		      fprintf(stderr,"punc:  ");
+		      for (i=0; i<NRFEAT; i++)
+			fprintf(stderr," [%10s]",
+				punc[i]);
+		      fprintf(stderr,"\n");
 		    }
-                  else
+		  
+		  
+		  strcpy(classifyline,"c ");
+		  
+		  for (i=0; i<NRFEAT-1; i++)
 		    {
-		      strcat(classifyline,punc[2]);
-		      strcpy(realout,punc[2]);
-		      strcat(classifyline,"\n");
+		      strcat(classifyline,buffer[i]);
+		      strcat(classifyline," ");
 		    }
-                }
-              else
-                {
-                  if (cap[3]!='-')
+		  
+		  if (strcmp(punc[2],"NP")!=0)
 		    {
-		      strcat(classifyline,"C\n");
-		      strcpy(realout,"C");
-		    }
-                  else
-		    {
-		      strcat(classifyline,"-\n");
-		      strcpy(realout,"-");
-		    }
-                }
-
-              if (DEBUG)
-                fprintf(stderr,"\ncalling Timbl with %s",
-                        classifyline);
-              
-              sock_puts(sock,classifyline);
-              sock_gets(sock,buff,sizeof(buff));
-              
-              if (DEBUG)
-                fprintf(stderr,"getting back: %s\n",
-                        buff);
-              
-              part=strtok(buff," \n");
-              part=strtok(NULL," \n");
-              strcpy(category,"");
-              for (j=1; j<strlen(part)-1; j++)
-                {
-                  strcat(category," ");
-                  category[j-1]=part[j];
-                }
-              while ((part!=NULL)&&
-                     (strcmp(part,"{")!=0))
-                part=strtok(NULL," \n");
-              
-              if (part!=NULL)
-                {
-                  nrdist=0;
-                  while ((part!=NULL)&&
-                         (strcmp(part,"}")!=0))
-                    {
-                      part=strtok(NULL," \n");
-                      if (strcmp(part,"}")!=0)
-                        {
-                          part=strtok(NULL," \n");
-                          if (part[strlen(part)-1]==',')
-                            sscanf(part,"%f,",&distweight[nrdist]);
-                          else
-                            sscanf(part,"%f",&distweight[nrdist]);
-                          nrdist++;
-                        }
-                    }
-                  if (DEBUG)
-                    {
-                      fprintf(stderr,"distro of %d:",
-                              nrdist);
-                      for (i=0; i<nrdist; i++)
-                        fprintf(stderr," %.0f",
-                                distweight[i]);
-                    }
-                  
-                  max=0.0;
-		  maxnr=0;
-                  total=0.0;
-                  for (i=0; i<nrdist; i++)
-                    {
-                      total+=distweight[i];
-                      if (distweight[i]>max)
-                        {
-                          max=distweight[i];
-                          maxnr=i;
-                        }
-                    }
-                  
-                  if (DEBUG)
-                    fprintf(stderr," - max %6.3f certainty\n",
-                            (max/total));
-                  
-                  if ((max/total>=threshold)&&
-                      (max/total<1.0)&&
-                      (total>MINOCC))
-                    {
-		      if ((strcmp(category,realout)!=0)&&
-			  (strcmp(category,"-")!=0))
+		      if (cap[3]!='-')
 			{
-			 
-			  fprintf(stdout," %s",
-				  category);
-			  fprintf(stderr,"line: %s",
-				  classifyline);
-			  fprintf(stderr,"we have to do something: predicted %s is not actual %s\n",
-				  category,realout);
+			  strcat(classifyline,punc[2]);
+			  strcpy(realout,punc[2]);
+			  strcat(classifyline,"C\n");
+			  strcat(realout,"C");
 			}
-                    }
+		      else
+			{
+			  strcat(classifyline,punc[2]);
+			  strcpy(realout,punc[2]);
+			  strcat(classifyline,"\n");
+			}
+		    }
+		  else
+		    {
+		      if (cap[3]!='-')
+			{
+			  strcat(classifyline,"C\n");
+			  strcpy(realout,"C");
+			}
+		      else
+			{
+			  strcat(classifyline,"-\n");
+			  strcpy(realout,"-");
+			}
+		    }
+		  
+		  if (DEBUG)
+		    fprintf(stderr,"\ncalling Timbl with %s",
+			    classifyline);
+		  
+		  sock_puts(sock,classifyline);
+		  sock_gets(sock,buff,sizeof(buff));
+		  
+		  if (DEBUG)
+		    fprintf(stderr,"getting back: %s\n",
+			    buff);
+		  
+		  part=strtok(buff," \n");
+		  part=strtok(NULL," \n");
+		  strcpy(category,"");
+		  for (j=1; j<strlen(part)-1; j++)
+		    {
+		      strcat(category," ");
+		      category[j-1]=part[j];
+		    }
+		  while ((part!=NULL)&&
+			 (strcmp(part,"{")!=0))
+		    part=strtok(NULL," \n");
+		  
+		  if (part!=NULL)
+		    {
+		      nrdist=0;
+		      while ((part!=NULL)&&
+			     (strcmp(part,"}")!=0))
+			{
+			  part=strtok(NULL," \n");
+			  if (strcmp(part,"}")!=0)
+			    {
+			      part=strtok(NULL," \n");
+			      if (part[strlen(part)-1]==',')
+				sscanf(part,"%f,",&distweight[nrdist]);
+			      else
+				sscanf(part,"%f",&distweight[nrdist]);
+			      nrdist++;
+			    }
+			}
+		      if (DEBUG)
+			{
+			  fprintf(stderr,"distro of %d:",
+				  nrdist);
+			  for (i=0; i<nrdist; i++)
+			    fprintf(stderr," %.0f",
+				    distweight[i]);
+			}
+		      
+		      max=0.0;
+		      maxnr=0;
+		      total=0.0;
+		      for (i=0; i<nrdist; i++)
+			{
+			  total+=distweight[i];
+			  if (distweight[i]>max)
+			    {
+			      max=distweight[i];
+			      maxnr=i;
+			    }
+			}
+		      
+		      if (DEBUG)
+			fprintf(stderr," - max %6.3f certainty\n",
+				(max/total));
+		      
+		      if ((max/total>=threshold)&&
+			  // (max/total<1.0)&&
+			  (total>MINOCC))
+			{
+			  if ((strcmp(category,realout)!=0)&&
+			      (strcmp(category,"-")!=0))
+			    {
+			      if (DEBUG)
+				{
+				  fprintf(stderr,"line: %s",
+					  classifyline);
+				  fprintf(stderr,"we have to do something: predicted %s is not actual %s\n",
+					  category,realout);
+				  fprintf(stderr,"correction: [%s]\n",
+					  category);
+				}
+			      fprintf(stdout," %s",
+				      category);
+			    }
+			}
+		    }
 		}
-            }
-        }
+	    }
+	}
 
       if ((counter>(NRFEAT/2)-1)&&
 	  (defcon<=NRFEAT/2))
-	fprintf(stdout,"\n");
+	{
+	  fprintf(stdout,"\n");
+	  if (DEBUG)
+	    fprintf(stderr,"\n");
+	}
 
       if (feof(bron))
         defcon++;
-      if (defcon==(NRFEAT/2)+2)
+      if (defcon>(NRFEAT/2))
         ready=1;
 
       counter++;
