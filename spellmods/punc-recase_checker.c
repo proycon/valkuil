@@ -99,6 +99,7 @@ int main(int argc, char *argv[])
       else
 	strcpy(readbuffer,"_");
 
+      /*
       if ((counter>(NRFEAT/2)-1)&&
 	  (defcon<=NRFEAT/2))
 	{
@@ -109,24 +110,11 @@ int main(int argc, char *argv[])
 	    fprintf(stderr,"original token: [%s]\n",
 		    membuffer[(NRFEAT/2)-1]);
 	}
+      */
+
       for (i=NRFEAT; i>0; i--)
 	strcpy(membuffer[i],membuffer[i-1]);
       strcpy(membuffer[0],readbuffer);
-
-      capped=0;
-      if ((readbuffer[0]>='A')&&
-          (readbuffer[0]<='Z'))
-        capped=1;
-      strcpy(locap,"");
-      for (i=0; i<strlen(readbuffer); i++)
-        {
-          strcat(locap," ");
-          if ((readbuffer[i]>='A')&&
-              (readbuffer[i]<='Z'))
-            locap[i]=readbuffer[i]+32;
-          else
-            locap[i]=readbuffer[i];
-        }
 
       if (strstr(puncstring,readbuffer))
 	{
@@ -134,6 +122,21 @@ int main(int argc, char *argv[])
 	}
       else
 	{
+	  capped=0;
+	  if ((readbuffer[0]>='A')&&
+	      (readbuffer[0]<='Z'))
+	    capped=1;
+	  strcpy(locap,"");
+	  for (i=0; i<strlen(readbuffer); i++)
+	    {
+	      strcat(locap," ");
+	      if ((readbuffer[i]>='A')&&
+		  (readbuffer[i]<='Z'))
+		locap[i]=readbuffer[i]+32;
+	      else
+		locap[i]=readbuffer[i];
+	    }
+	  
 	  for (i=0; i<NRFEAT-1; i++)
 	    {
 	      strcpy(buffer[i],buffer[i+1]);
@@ -146,6 +149,7 @@ int main(int argc, char *argv[])
 	  else
 	    cap[NRFEAT-1]='-';
 	  strcpy(punc[NRFEAT-1],"NP");
+		
       
 	  if (DEBUG)
 	    fprintf(stderr,"checking [%s]-[%c]-[%s]\n",
@@ -153,11 +157,22 @@ int main(int argc, char *argv[])
 		    cap[(NRFEAT/2)],
 		    punc[(NRFEAT/2)]);
 	  
-	  
 	  if (counter>2)
 	    {
-	      if (strcmp(punc[(NRFEAT/2)],"NP")==0)
+	      //if (strcmp(punc[(NRFEAT/2)],"NP")==0)
 		{
+		  if ((counter>(NRFEAT/2)-1)&&
+		      (defcon<=NRFEAT/2))
+		    {
+		      
+		      fprintf(stdout,"%s",
+			     buffer[(NRFEAT/2)]);
+		      if (DEBUG)
+			fprintf(stderr,"original token: [%s]\n",
+				buffer[(NRFEAT/2)]);
+		    }
+
+
 		  if (DEBUG)
 		    {
 		      fprintf(stderr,"\nbuffer:");
@@ -306,15 +321,31 @@ int main(int argc, char *argv[])
 			}
 		    }
 		}
-	    }
-	}
+	      if (strcmp(punc[NRFEAT/2],"NP")!=0)
+		{
+		  if ((counter>(NRFEAT/2)-1)&&
+		      (defcon<=NRFEAT/2))
+		    {
+		      
+		      fprintf(stdout,"\n%s",
+			     punc[(NRFEAT/2)]);
+		      if (DEBUG)
+			fprintf(stderr,"original token: [%s]\n",
+				punc[(NRFEAT/2)]);
+		    }
 
-      if ((counter>(NRFEAT/2)-1)&&
-	  (defcon<=NRFEAT/2))
-	{
-	  fprintf(stdout,"\n");
-	  if (DEBUG)
-	    fprintf(stderr,"\n");
+
+		}
+	    }
+	
+	
+	  if ((counter>(NRFEAT/2)-1)&&
+	      (defcon<=NRFEAT/2))
+	    {
+	      fprintf(stdout,"\n");
+	      if (DEBUG)
+		fprintf(stderr,"\n");
+	    }
 	}
 
       if (feof(bron))
