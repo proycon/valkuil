@@ -162,8 +162,8 @@ def valkuileval(outfile, reffile, evaldata):
 
     corrections_out  = list(outdoc.select(folia.Correction))
     corrections_ref  = list(refdoc.select(folia.Correction))
-    evaldata.totalout = len(corrections_out)
-    evaldata.totalref = len(corrections_ref)
+    evaldata.totalout += len(corrections_out)
+    evaldata.totalref += len(corrections_ref)
     if not corrections_ref:
         print("No corrections in reference document " + refdoc.id + ", skipping...",file=sys.stderr)
         return
