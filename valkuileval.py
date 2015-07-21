@@ -250,7 +250,7 @@ def valkuileval(outfile, reffile, evaldata):
 
 
     if evaldata.tp + evaldata.fp != evaldata.totalout:
-        print("Sanity check failed: tp + fp != totalout --  " + str(evaldata.tp) + " + " + str(evaldata.fp) + " != " + str(evaldata.totalout),file=sys.stderr)
+        raise Exception("Sanity check failed: tp + fp != totalout --  " + str(evaldata.tp) + " + " + str(evaldata.fp) + " != " + str(evaldata.totalout))
 
     #Compute aggregated precision, all correction on the same word(s) are combined, only one needs to match
     for correction_out in corrections_out:
