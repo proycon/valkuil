@@ -77,7 +77,6 @@ class Evaldata():
     def output(self):
         print("OVERALL RESULTS")
         print("=================")
-        assert self.tp + self.fp == self.totalout
         print(" Total number of corrections in output      : ", self.tp+self.fp ),
         print(" Total number of corrections in reference   : ", self.totalref ),
         print(" Matching output corrections (tp)                  : ",  self.tp)
@@ -163,6 +162,8 @@ def valkuileval(outfile, reffile, evaldata):
 
     corrections_out  = list(outdoc.select(folia.Correction))
     corrections_ref  = list(refdoc.select(folia.Correction))
+    evaldata.totalout = len(corrections_out)
+    evaldata.totalref = len(corrections_ref)
     if not corrections_ref:
         print("No corrections in reference document " + refdoc.id + ", skipping...",file=sys.stderr)
         return
@@ -248,6 +249,9 @@ def valkuileval(outfile, reffile, evaldata):
         correction_out.handled = False #init next round
 
 
+    if evaldata.tp + evaldata.fp != evaldata.totalout:
+        print("Sanity check failed: tp + fp != totalout --  " + str(evaldata.tp) + + " + " + str(evaldata.fp) + " != " + str(evaldata.totalout),file=sys.stderr)
+
     #Compute aggregated precision, all correction on the same word(s) are combined, only one needs to match
     evaldata.totalout = len(corrections_out)
     for correction_out in corrections_out:
@@ -266,6 +270,8 @@ def valkuileval(outfile, reffile, evaldata):
             correction_out.handled = True
             for co in correction_out.siblings:
                 co.handled = True
+
+
 
 
 
