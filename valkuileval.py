@@ -162,11 +162,12 @@ def valkuileval(outfile, reffile, evaldata):
 
     corrections_out  = list(outdoc.select(folia.Correction))
     corrections_ref  = list(refdoc.select(folia.Correction))
-    evaldata.totalout += len(corrections_out)
-    evaldata.totalref += len(corrections_ref)
     if not corrections_ref:
         print("No corrections in reference document " + refdoc.id + ", skipping...",file=sys.stderr)
         return
+
+    evaldata.totalout += len(corrections_out)
+    evaldata.totalref += len(corrections_ref)
 
     #match the ones that cover the same words
     for correction_out in corrections_out:
