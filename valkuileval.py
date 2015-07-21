@@ -71,13 +71,19 @@ class Evaldata():
         self.refclsdistr = defaultdict(int)
         self.outclsdistr = defaultdict(int)
         self.aggrav = 0
+        self.totalout = 0
+        self.totalref = 0
 
     def output(self):
         print("OVERALL RESULTS")
         print("=================")
+        assert self.tp + self.tp == len(self.totalout)
         print(" Total number of corrections in output      : ", self.tp+self.fp ),
-        print(" Total number of corrections in reference   : ",  self.tp+self.fn )
-        print(" Matching corrections                       : ",  self.tp)
+        print(" Total number of corrections in reference   : ", len(self.totalref) ),
+        print(" Matching output corrections (tp)                  : ",  self.tp)
+        print(" Missed output corrections (fp)                    : ",  self.fp)
+        print(" Missed reference corrections (fn)                 : ",  self.fn)
+        print(" Virtual total (tp+fn)                             : ",  self.tp+self.fn )
         print(" Precision (micro)                          : ", round(self.tp / (self.tp+self.fp),2) )
         print(" Recall (micro)                             : ", round(self.tp / (self.tp+self.fn),2) )
         print(" F1-score (micro)                           : ", round(2*self.tp / (2*self.tp+self.fp+self.fn),2) )
@@ -241,6 +247,7 @@ def valkuileval(outfile, reffile, evaldata):
 
 
     #Compute aggregated precision, all correction on the same word(s) are combined, only one needs to match
+    evaldata.totalout = len(corrections_out)
     for correction_out in corrections_out:
         if not correction_out.handled:
             if isinstance(correction_out.parent, folia.Word):
@@ -261,6 +268,7 @@ def valkuileval(outfile, reffile, evaldata):
 
 
     #Computing recall
+    evaldata.totalref = len(corrections_ref)
     for correction_ref in corrections_ref:
         evaldata.refclsdistr[correction_ref.cls] += 1
         if correction_ref.hasoriginal() and correction_ref.original().hastext(None,strict=False):
