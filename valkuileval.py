@@ -79,10 +79,10 @@ class Evaldata():
         print("=================")
         print(" Total number of corrections in output      : ", self.tp+self.fp ),
         print(" Total number of corrections in reference   : ", self.totalref ),
-        print(" Matching output corrections (tp)                  : ",  self.tp)
-        print(" Missed output corrections (fp)                    : ",  self.fp)
-        print(" Missed reference corrections (fn)                 : ",  self.fn)
-        print(" Virtual total (tp+fn)                             : ",  self.tp+self.fn )
+        print(" Matching output corrections (tp)           : ",  self.tp)
+        print(" Missed output corrections (fp)             : ",  self.fp)
+        print(" Missed reference corrections (fn)          : ",  self.fn)
+        print(" Virtual total (tp+fn)                      : ",  self.tp+self.fn )
         print(" Precision (micro)                          : ", round(self.tp / (self.tp+self.fp),2) )
         print(" Recall (micro)                             : ", round(self.tp / (self.tp+self.fn),2) )
         print(" F1-score (micro)                           : ", round(2*self.tp / (2*self.tp+self.fp+self.fn),2) )
@@ -276,7 +276,6 @@ def valkuileval(outfile, reffile, evaldata):
 
 
     #Computing recall
-    evaldata.totalref = len(corrections_ref)
     for correction_ref in corrections_ref:
         evaldata.refclsdistr[correction_ref.cls] += 1
         if correction_ref.hasoriginal() and correction_ref.original().hastext(None,strict=False):
