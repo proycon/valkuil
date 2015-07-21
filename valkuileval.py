@@ -287,7 +287,7 @@ def valkuileval(outfile, reffile, evaldata):
             correction_ref.handled = True
 
             if isinstance(correction_ref.parent, folia.Word):
-                correction_ref.siblings = [ cr for cr in corrections_out if cr.parent.id == correction_ref.parent.id and cr is not correction_ref ]
+                correction_ref.siblings = [ cr for cr in corrections_ref if cr.parent.id == correction_ref.parent.id and cr is not correction_ref ]
             else:
                 correction_ref.siblings = [] #there are never multiple splits/merges in different corrections
 
