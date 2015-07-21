@@ -77,7 +77,7 @@ class Evaldata():
     def output(self):
         print("OVERALL RESULTS")
         print("=================")
-        assert self.tp + self.tp == self.totalout
+        assert self.tp + self.fp == self.totalout
         print(" Total number of corrections in output      : ", self.tp+self.fp ),
         print(" Total number of corrections in reference   : ", self.totalref ),
         print(" Matching output corrections (tp)                  : ",  self.tp)
@@ -92,7 +92,9 @@ class Evaldata():
         print(" Aggregated average corrections                        : ", round(self.aggrav,2) )
         print(" Total number of aggregated corrections in output      : ", self.aggrtp+self.aggrfp ),
         print(" Total number of aggregated corrections in reference   : ",  self.aggrtp+self.aggrfn )
-        print(" Matching aggregated corrections                       : ",  self.aggrtp)
+        print(" Matching output aggregated corrections (tp)           : ",  self.aggrtp)
+        print(" Missed output aggregated corrections (fp)             : ",  self.aggrfp)
+        print(" Missed reference aggregated corrections (fn)          : ",  self.aggrfn)
         print(" Aggregated precision (micro)                          : ", round(self.aggrtp / (self.aggrtp+self.aggrfp),2) )
         print(" Aggregated recall (micro)                             : ", round(self.aggrtp / (self.aggrtp+self.aggrfn),2) )
         print(" Aggregated F1-score (micro)                           : ", round(2*self.aggrtp / (2*self.aggrtp+self.aggrfp+self.aggrfn),2) )
