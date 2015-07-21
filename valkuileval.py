@@ -92,6 +92,7 @@ class Evaldata():
         print("Aggregated corrections when they are on the same words:")
         print(" Aggregated average corrections                        : ", round(self.aggrav,2) )
         print(" Total number of aggregated corrections in output      : ",  self.aggrtotalout ),
+        print(" Total number of aggregated corrections in reference   : ",  self.aggrtotalref ),
         print(" Matching output aggregated corrections (tp)           : ",  self.aggrtp)
         print(" Missed output aggregated corrections (fp)             : ",  self.aggrfp)
         print(" Missed reference aggregated corrections (fn)          : ",  self.aggrfn)
