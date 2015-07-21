@@ -77,9 +77,9 @@ class Evaldata():
     def output(self):
         print("OVERALL RESULTS")
         print("=================")
-        assert self.tp + self.tp == len(self.totalout)
+        assert self.tp + self.tp == self.totalout
         print(" Total number of corrections in output      : ", self.tp+self.fp ),
-        print(" Total number of corrections in reference   : ", len(self.totalref) ),
+        print(" Total number of corrections in reference   : ", self.totalref ),
         print(" Matching output corrections (tp)                  : ",  self.tp)
         print(" Missed output corrections (fp)                    : ",  self.fp)
         print(" Missed reference corrections (fn)                 : ",  self.fn)
