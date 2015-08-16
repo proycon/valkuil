@@ -5,6 +5,8 @@
 #   Master script for Valkuil processing chain
 #----------------------------------------------
 
+from __future__ import print_function, unicode_literals, division, absolute_import
+
 import sys
 import os
 import datetime
@@ -13,9 +15,13 @@ import json
 import io
 import random
 from threading import Thread
-from Queue import Queue
+if sys.version < '3':
+    from Queue import Queue  #pylint: disable=import-error
+else:
+    from queue import Queue
 from pynlpl.textprocessors import Windower
 import pynlpl.formats.folia as folia
+from pynlpl.common import u
 
 EOS = tuple() #should contain EOS symbols the punc_recase module may generate, in which case a sentence split will be done, but visualisation thereof is not supported yet so we keep it empty
 
@@ -35,7 +41,7 @@ class AbstractModule(object): #Do not modify
     def errout(self,msg):
         s = "[" + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '] PROCESSING-CHAIN ['+self.NAME+']: ' + msg
         try:
-            print >>sys.stderr, s.encode('utf-8')
+            print(s.encode('utf-8'),file=sys.stderr)
         except:
             pass
 
@@ -165,7 +171,7 @@ class AbstractModule(object): #Do not modify
                 **kwargs
             )
         except:
-            print >>sys.stderr, "ERROR DURING mergecorrection ... SKIPPING FOR NOW"
+            print("ERROR DURING mergecorrection ... SKIPPING FOR NOW",file=sys.stderr)
 
 
 
@@ -190,7 +196,7 @@ class ErrorListModule(AbstractModule):
         #Extract data for module
         f = io.open(self.outputdir + 'errorlist_comparison.test.inst','w',encoding='utf-8')
         for currentword in self.doc.words():
-            f.write( unicode(currentword) + ' ')
+            f.write( u(currentword) + ' ')
         f.close()
 
         #Call module and ask it to produce output
@@ -759,7 +765,7 @@ class PUNC_RECASE_Checker(AbstractModule):
 
                         if fields[1] == '-':
                             if prevword:
-                                print >>sys.stderr, "DEBUG punc-recase: suggestion for deletion for " + prevword.id
+                                print("DEBUG punc-recase: suggestion for deletion for " + prevword.id,file=sys.stderr)
                                 self.suggestdeletion(prevword, cls='punctuatie', annotator=self.NAME) #empty suggestion implies deletion
 
                         elif fields[1]:
@@ -798,11 +804,11 @@ class PUNC_RECASE_Checker(AbstractModule):
                                 #prepend punctuation (insertion)
                                 index = word.parent.getindex(word)
                                 doc = word.doc
-                                print >>sys.stderr, "DEBUG punc-recase: punctuation insertion for " + word.id + " @" + str(index)
+                                print("DEBUG punc-recase: punctuation insertion for " + word.id + " @" + str(index),file=sys.stderr)
                                 word.parent.insert(index,folia.Correction(doc, folia.Suggestion(doc, folia.Word(doc,punctuation,generate_id_in=word.parent)), folia.Current(doc), set='valkuilset', cls='punctuatie',annotator=self.NAME,annotatortype=folia.AnnotatorType.AUTO, generate_id_in=word.parent))
                             else:
                                 #confusible
-                                print >>sys.stderr, "DEBUG punc-recase: punctuation confusible for " + word.id
+                                print("DEBUG punc-recase: punctuation confusible for " + word.id,file=sys.stderr)
                                 self.addcorrection(word, suggestions=[punctuation], cls='punctuatie', annotator=self.NAME)
 
                             #nospace setting on prevword not included in the suggestions, can be set when a correction is accepted
@@ -938,7 +944,7 @@ modules = [WOPRChecker, ErrorListModule, LexiconModule, AspellModule, SoundAlike
 
 
 def errout(msg):
-    print >>sys.stderr,  "[" + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '] PROCESSING-CHAIN: ' + msg
+    print(  "[" + datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') + '] PROCESSING-CHAIN: ' + msg,file=sys.stderr)
 
 def processor(queue):
     while True:
@@ -992,14 +998,14 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
     f = io.open(outputdir + 'input.tok.txt','w',encoding='utf-8')
     for currentword in doc.words():
         try:
-            f.write( unicode(currentword) + ' ')
+            f.write( u(currentword) + ' ')
         except folia.NoSuchText:
             raise folia.NoSuchText("No text for " + str(currentword.id) + "!")
     f.close()
 
     f = io.open(outputdir + 'agreement_checker.test.inst','w', encoding='utf-8')
     for prevword3, prevword2, prevword, currentword, nextword, nextword2, nextword3 in Windower(doc.words(),7):
-        f.write( unicode(prevword3) + ' ' + unicode(prevword2) + ' ' + unicode(prevword) + ' ' + unicode(currentword) + ' ' + unicode(nextword) + ' ' + unicode(nextword2) + ' ' + unicode(nextword3) + ' ' + unicode(currentword) + '\n')
+        f.write( u(prevword3) + ' ' + u(prevword2) + ' ' + u(prevword) + ' ' + u(currentword) + ' ' + u(nextword) + ' ' + u(nextword2) + ' ' + u(nextword3) + ' ' + u(currentword) + '\n')
     f.close()
 
 
@@ -1047,12 +1053,12 @@ def folia2json(doc):
     for correction in doc.data[0].select(folia.Correction):
         suggestions = []
         for suggestion in correction.suggestions():
-            suggestions.append( {'suggestion': unicode(suggestion), 'confidence': suggestion.confidence } )
+            suggestions.append( {'suggestion': u(suggestion), 'confidence': suggestion.confidence } )
 
         ancestor = correction.ancestor(folia.AbstractStructureElement)
         index = None
         if isinstance(ancestor, folia.Sentence):
-            text = unicode(correction.current())
+            text = u(correction.current())
             index = 0
             for i, item in enumerate(ancestor):
                 if isinstance(item, folia.Word):
@@ -1060,7 +1066,7 @@ def folia2json(doc):
                 if item is correction:
                     break
         elif isinstance(ancestor, folia.Word):
-            text = unicode(ancestor)
+            text = u(ancestor)
             sentence = ancestor.ancestor(folia.Sentence)
             for i, word in enumerate(sentence.words()):
                 if word is ancestor:
@@ -1080,7 +1086,7 @@ try:
     standalone = False
 except ImportError:
     standalone = True
-    print >>sys.stderr, "WARNING: CLAM modules not found, trying to run standalone...."
+    print( "WARNING: CLAM modules not found, trying to run standalone....",file=sys.stderr)
 
 id = None
 bindir = ''
@@ -1116,7 +1122,7 @@ elif sys.argv[1] == 'process_sentence':
         bindir += '/'
     statusfile = None
 
-    sentence = unicode(sys.argv[4], 'utf-8')
+    sentence = u(sys.argv[4])
 
     tmpdir = ".process_sentence." + "%032x" % random.getrandbits(128) + '/'
     os.mkdir(tmpdir)
@@ -1125,7 +1131,7 @@ elif sys.argv[1] == 'process_sentence':
     threshold = 0.75
 
     doc = process(tmpdir + '/sentence.txt', tmpdir, rootdir, bindir, statusfile, modules, threshold,standalone, False)
-    print json.dumps(folia2json(doc))
+    print(json.dumps(folia2json(doc)))
 
     #shutil.rmtree(tmpdir)
 
@@ -1136,7 +1142,7 @@ else:
         if len(sys.argv) >= 3:
             id = sys.argv[2]
     except:
-        print >>sys.stderr, "Syntax: processchain.py inputfile [id] [responsivity-threshold]"
+        print( "Syntax: processchain.py inputfile [id] [responsivity-threshold]",file=sys.stderr)
         sys.exit(1)
     try:
         threshold = int(sys.argv[3])
