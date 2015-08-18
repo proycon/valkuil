@@ -14,6 +14,8 @@
 #
 ###############################################################
 
+from __future__ import print_function, unicode_literals, division, absolute_import
+
 from clam.common.parameters import *
 from clam.common.formats import *
 from clam.common.converters import *
@@ -39,42 +41,43 @@ SYSTEM_DESCRIPTION = "Valkuil Spellingcorrectie voor het Nederlands"
 
 # ======== LOCATION ===========
 host = uname()[1]
-if host == 'aurora' or host == 'roma': #proycon's laptop/server
+if 'VIRTUAL_ENV' in os.environ:
+    ROOT = os.environ['VIRTUAL_ENV'] + "/valkuil.clam/"
+    PORT = 8080
+    BINDIR = os.environ['VIRTUAL_ENV'] + '/bin/'
+    VALKUILDIR = os.environ['VIRTUAL_ENV'] + '/valkuil/'
+
+    if host == 'applejack': #configuration for server in Nijmegen
+        HOST = "webservices-lst.science.ru.nl"
+        URLPREFIX = 'valkuil'
+
+        if not 'CLAMTEST' in environ:
+            ROOT = "/scratch2/www/webservices-lst/live/writable/valkuil/"
+            PORT = 80
+        else:
+            ROOT = "/scratch2/www/webservices-lst/test/writable/valkuil/"
+            PORT = 81
+
+        USERS_MYSQL = {
+            'host': 'mysql-clamopener.science.ru.nl',
+            'user': 'clamopener',
+            'password': D(open(environ['CLAMOPENER_KEYFILE']).read().strip()),
+            'database': 'clamopener',
+            'table': 'clamusers_clamusers'
+        }
+        DEBUG = False
+        REALM = "WEBSERVICES-LST"
+        DIGESTOPAQUE = open(environ['CLAM_DIGESTOPAQUEFILE']).read().strip()
+        SECRETKEY = open(os.environ['CLAM_SECRETKEYFILE']).read().strip()
+        VALKUILDIR = "/scratch2/www/webservices-lst/live/repo/valkuil/"
+        ADMINS = ['proycon','antalb','wstoop']
+if host == 'caprica' or host == 'roma': #proycon's laptop/server
     CLAMDIR = "/home/proycon/work/clam"
     ROOT = "/home/proycon/work/valkuil.clam/"
     PORT = 9001
     BINDIR = '/usr/local/bin/'
     #URLPREFIX = 'ucto'
     VALKUILDIR = '/home/proycon/work/valkuil/'
-elif host == 'applejack': #Nijmegen
-    CLAMDIR = "/scratch2/www/webservices-lst/live/repo/clam"
-    ROOT = "/scratch2/www/webservices-lst/live/writable/valkuil/"
-    HOST = "webservices-lst.science.ru.nl"
-    PORT = 80
-    URLPREFIX = "valkuil"
-    BINDIR = "/vol/customopt/uvt-ru/bin/"
-    VALKUILDIR = "/scratch2/www/webservices-lst/live/repo/valkuil/"
-    USERS_MYSQL = {
-        'host': 'mysql-clamopener.science.ru.nl',
-        'user': 'clamopener',
-        'password': D(open(environ['CLAMOPENER_KEYFILE']).read().strip()),
-        'database': 'clamopener',
-        'table': 'clamusers_clamusers'
-    }
-    DEBUG = True
-    REALM = "WEBSERVICES-LST"
-    ADMINS = ['proycon','antalb','wstoop']
-    #DIGESTOPAQUE = open(environ['CLAM_DIGESTOPAQUEFILE']).read().strip()
-elif host == 'echo' or host == 'nomia' or host == 'echo.uvt.nl' or host == 'nomia.uvt.nl': #Tilburg
-    #Assuming ILK server
-    CLAMDIR = "/var/www/clam"
-    ROOT = "/var/www/clamdata/valkuil/"
-    HOST = 'webservices.ticc.uvt.nl'
-    PORT = 80
-    URLPREFIX = 'valkuil'
-    WEBSERVICEGHOST = 'ws'
-    BINDIR = '/var/www/bin/'
-    VALKUILDIR = '/var/www/valkuil/'
 else:
     raise Exception("I don't know where I'm running from! Got " + host)
 
