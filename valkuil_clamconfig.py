@@ -22,7 +22,7 @@ from clam.common.converters import *
 from clam.common.viewers import *
 from clam.common.data import *
 from clam.common.digestauth import pwhash
-from os import uname, environ
+import os
 from base64 import b64decode as D
 import sys
 
@@ -40,7 +40,7 @@ SYSTEM_NAME = "Valkuil"
 SYSTEM_DESCRIPTION = "Valkuil Spellingcorrectie voor het Nederlands"
 
 # ======== LOCATION ===========
-host = uname()[1]
+host = os.uname()[1]
 if 'VIRTUAL_ENV' in os.environ:
     ROOT = os.environ['VIRTUAL_ENV'] + "/valkuil.clam/"
     PORT = 8080
@@ -51,7 +51,7 @@ if 'VIRTUAL_ENV' in os.environ:
         HOST = "webservices-lst.science.ru.nl"
         URLPREFIX = 'valkuil'
 
-        if not 'CLAMTEST' in environ:
+        if not 'CLAMTEST' in os.environ:
             ROOT = "/scratch2/www/webservices-lst/live/writable/valkuil/"
             PORT = 80
         else:
@@ -61,13 +61,13 @@ if 'VIRTUAL_ENV' in os.environ:
         USERS_MYSQL = {
             'host': 'mysql-clamopener.science.ru.nl',
             'user': 'clamopener',
-            'password': D(open(environ['CLAMOPENER_KEYFILE']).read().strip()),
+            'password': D(open(os.environ['CLAMOPENER_KEYFILE']).read().strip()),
             'database': 'clamopener',
             'table': 'clamusers_clamusers'
         }
         DEBUG = False
         REALM = "WEBSERVICES-LST"
-        DIGESTOPAQUE = open(environ['CLAM_DIGESTOPAQUEFILE']).read().strip()
+        DIGESTOPAQUE = open(os.environ['CLAM_DIGESTOPAQUEFILE']).read().strip()
         SECRETKEY = open(os.environ['CLAM_SECRETKEYFILE']).read().strip()
         VALKUILDIR = "/scratch2/www/webservices-lst/live/repo/valkuil/"
         ADMINS = ['proycon','antalb','wstoop']
