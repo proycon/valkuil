@@ -196,7 +196,7 @@ class ErrorListModule(AbstractModule):
         #Extract data for module
         f = io.open(self.outputdir + 'errorlist_comparison.test.inst','w',encoding='utf-8')
         for currentword in self.doc.words():
-            f.write( u(currentword) + ' ')
+            f.write( currentword.text() + ' ')
         f.close()
 
         #Call module and ask it to produce output
@@ -998,14 +998,14 @@ def process(inputfile, outputdir, rootdir, bindir, statusfile, modules, threshol
     f = io.open(outputdir + 'input.tok.txt','w',encoding='utf-8')
     for currentword in doc.words():
         try:
-            f.write( u(currentword) + ' ')
+            f.write( currentword.text() + ' ')
         except folia.NoSuchText:
             raise folia.NoSuchText("No text for " + str(currentword.id) + "!")
     f.close()
 
     f = io.open(outputdir + 'agreement_checker.test.inst','w', encoding='utf-8')
     for prevword3, prevword2, prevword, currentword, nextword, nextword2, nextword3 in Windower(doc.words(),7):
-        f.write( u(prevword3) + ' ' + u(prevword2) + ' ' + u(prevword) + ' ' + u(currentword) + ' ' + u(nextword) + ' ' + u(nextword2) + ' ' + u(nextword3) + ' ' + u(currentword) + '\n')
+        f.write( prevword3.text() + ' ' + prevword2.text() + ' ' + prevword.text() + ' ' + currentword.text() + ' ' + nextword.text() + ' ' + nextword2.text() + ' ' + nextword3.text() + ' ' + currentword.text() + '\n')
     f.close()
 
 
@@ -1053,12 +1053,12 @@ def folia2json(doc):
     for correction in doc.data[0].select(folia.Correction):
         suggestions = []
         for suggestion in correction.suggestions():
-            suggestions.append( {'suggestion': u(suggestion), 'confidence': suggestion.confidence } )
+            suggestions.append( {'suggestion': suggestion.text(), 'confidence': suggestion.confidence } )
 
         ancestor = correction.ancestor(folia.AbstractStructureElement)
         index = None
         if isinstance(ancestor, folia.Sentence):
-            text = u(correction.current())
+            text = correction.current().text()
             index = 0
             for i, item in enumerate(ancestor):
                 if isinstance(item, folia.Word):
@@ -1066,7 +1066,7 @@ def folia2json(doc):
                 if item is correction:
                     break
         elif isinstance(ancestor, folia.Word):
-            text = u(ancestor)
+            text = ancestor.text()
             sentence = ancestor.ancestor(folia.Sentence)
             for i, word in enumerate(sentence.words()):
                 if word is ancestor:
