@@ -68,7 +68,7 @@ if 'VIRTUAL_ENV' in os.environ:
         DEBUG = False
         REALM = "WEBSERVICES-LST"
         DIGESTOPAQUE = open(os.environ['CLAM_DIGESTOPAQUEFILE']).read().strip()
-        SECRETKEY = open(os.environ['CLAM_SECRETKEYFILE']).read().strip()
+        SECRET_KEY = open(os.environ['CLAM_SECRETKEYFILE']).read().strip()
         VALKUILDIR = "/scratch2/www/webservices-lst/live/repo/valkuil/"
         ADMINS = ['proycon','antalb','wstoop']
 if host == 'caprica' or host == 'roma': #proycon's laptop/server
