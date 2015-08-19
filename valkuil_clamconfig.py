@@ -71,7 +71,7 @@ if 'VIRTUAL_ENV' in os.environ:
         SECRET_KEY = open(os.environ['CLAM_SECRETKEYFILE']).read().strip()
         VALKUILDIR = "/scratch2/www/webservices-lst/live/repo/valkuil/"
         ADMINS = ['proycon','antalb','wstoop']
-if host == 'caprica' or host == 'roma': #proycon's laptop/server
+elif host == 'caprica' or host == 'roma': #proycon's laptop/server
     CLAMDIR = "/home/proycon/work/clam"
     ROOT = "/home/proycon/work/valkuil.clam/"
     PORT = 9001
