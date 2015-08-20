@@ -52,7 +52,7 @@ hostname = gethostname()
 if hostname == "spitfire" or hostname == "spitfire.science.ru.nl":  #Nijmegen
     ROOT_DIR = "/var/www2/valkuil/live/repo/valkuil/"
     DOCDIR = "/var/www2/valkuil/live/writable/userdocs/" 
-    CLAMSERVICE = 'http://lst-webservices.science.ru.nl/valkuil/'
+    CLAMSERVICE = 'http://webservices-lst.science.ru.nl/valkuil/'
     
     MEDIA_URL = 'http://valkuil.science.ru.nl/style/' #TODO: adapt to new domains
     
