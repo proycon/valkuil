@@ -59,7 +59,7 @@ if hostname == "spitfire" or hostname == "spitfire.science.ru.nl":  #Nijmegen
     CLAMUSER = 'internal'
     CLAMPASS = D(open(environ['CLAMOPENER_PASSFILE']).read().strip())
     
-    DEBUG = False #No debug in production environment            
+    DEBUG = True #TODO: reverse, No debug in production environment            
 elif hostname == 'echo' or hostname == 'nomia' or hostname == 'echo.uvt.nl' or hostname == 'nomia.uvt.nl': #Tilburg
     ROOT_DIR = "/var/www/valkuil/"
     DOCDIR = ROOT_DIR + 'userdocs/'
