@@ -75,10 +75,12 @@ class Evaldata():
         self.totalref = 0
         self.aggrtotalout = 0
         self.aggrtotalref = 0
+        self.docs = 0
 
     def output(self):
         print("OVERALL RESULTS")
         print("=================")
+        print(" Documents                                  : ", self.docs),
         print(" Total number of corrections in output      : ", self.tp+self.fp ),
         print(" Total number of corrections in reference   : ", self.totalref ),
         print(" Matching output corrections (tp)           : ",  self.tp)
@@ -169,6 +171,9 @@ def valkuileval(outfile, reffile, evaldata):
         print("No corrections in reference document " + refdoc.id + ", skipping...",file=sys.stderr)
         return
 
+
+    evaldata.docs += 1
+    
     evaldata.totalout += len(corrections_out)
     evaldata.totalref += len(corrections_ref)
 
