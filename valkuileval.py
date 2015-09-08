@@ -107,7 +107,7 @@ class Evaldata():
             print("PER-MODULE RESULTS")
             print("====================")
             for module in sorted(self.modtp):
-                print("Precision for " + module + " : ", round(self.modtp[module] / (self.modtp[module]+self.modfp[module]),2) )
+                print("Precision for " + module + " : ", str(round(self.modtp[module] / (self.modtp[module]+self.modfp[module]),2)) + "     (" + str(self.modtp[module]) +'/'+ str(self.modtp[module]+self.modfp[module]) + ")" )
             print("")
         if self.clstp:
             print("")
@@ -129,13 +129,13 @@ class Evaldata():
         print("================================")
         totalfreq = sum(self.refclsdistr.values())
         for cls, freq in sorted(self.refclsdistr.items()):
-            print(cls + " : ", freq, round(freq / totalfreq,2))
+            print(cls + " : ", freq, str(round((freq / totalfreq) * 100,1)) + "%")
         print("")
         print("OUTPUT CLASS DISTRIBUTION")
         print("================================")
         totalfreq = sum(self.outclsdistr.values())
         for cls, freq in sorted(self.outclsdistr.items()):
-            print(cls + " : ", freq, round(freq / totalfreq,2))
+            print(cls + " : ", freq, str(round((freq / totalfreq)*100,1)) + "%")
 
 
 
