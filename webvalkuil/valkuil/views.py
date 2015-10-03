@@ -63,7 +63,7 @@ def process(request):
     #add input file
     try:
         client.addinput(id, clamdata.inputtemplate('textinput'), text, filename=id +'.txt',encoding='utf-8')
-    except Exception, e:
+    except Exception as e:
         try:
             client.delete(id)
         except:

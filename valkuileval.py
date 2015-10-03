@@ -75,10 +75,12 @@ class Evaldata():
         self.totalref = 0
         self.aggrtotalout = 0
         self.aggrtotalref = 0
+        self.docs = 0
 
     def output(self):
         print("OVERALL RESULTS")
         print("=================")
+        print(" Documents                                  : ", self.docs),
         print(" Total number of corrections in output      : ", self.tp+self.fp ),
         print(" Total number of corrections in reference   : ", self.totalref ),
         print(" Matching output corrections (tp)           : ",  self.tp)
@@ -105,7 +107,7 @@ class Evaldata():
             print("PER-MODULE RESULTS")
             print("====================")
             for module in sorted(self.modtp):
-                print("Precision for " + module + " : ", round(self.modtp[module] / (self.modtp[module]+self.modfp[module]),2) )
+                print("Precision for " + module + " : ", str(round(self.modtp[module] / (self.modtp[module]+self.modfp[module]),2)) + "     (" + str(self.modtp[module]) +'/'+ str(self.modtp[module]+self.modfp[module]) + ")" )
             print("")
         if self.clstp:
             print("")
@@ -127,13 +129,13 @@ class Evaldata():
         print("================================")
         totalfreq = sum(self.refclsdistr.values())
         for cls, freq in sorted(self.refclsdistr.items()):
-            print(cls + " : ", freq, round(freq / totalfreq,2))
+            print(cls + " : ", freq, str(round((freq / totalfreq) * 100,1)) + "%")
         print("")
         print("OUTPUT CLASS DISTRIBUTION")
         print("================================")
         totalfreq = sum(self.outclsdistr.values())
         for cls, freq in sorted(self.outclsdistr.items()):
-            print(cls + " : ", freq, round(freq / totalfreq,2))
+            print(cls + " : ", freq, str(round((freq / totalfreq)*100,1)) + "%")
 
 
 
@@ -169,6 +171,9 @@ def valkuileval(outfile, reffile, evaldata):
         print("No corrections in reference document " + refdoc.id + ", skipping...",file=sys.stderr)
         return
 
+
+    evaldata.docs += 1
+    
     evaldata.totalout += len(corrections_out)
     evaldata.totalref += len(corrections_ref)
 
