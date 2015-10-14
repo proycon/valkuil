@@ -158,19 +158,25 @@ door taalregels in te voeren, maar door valkuil.net te hertrainen op
 meer of anders geselecteerde voorbeelden.
 </p>
 
-<p><b>Wat zit er onder de motorkap</b>? Data-gedreven,
-geheugengebaseerde taaltechnologie. Ondanks dat de modules zich
-baseren op honderden miljoenen woorden Nederlandse tekst zijn ze
-lichtgewicht en snel; ze maken gebruik
-van <a href="http://ilk.uvt.nl/timbl"><b>Timbl</b></a>, een open
-source softwarepakket voor geoptimaliseerde geheugengebaseerde
-classificatie, dat we sinds de jaren '90 in Tilburg
-ontwikkelen. Valkuil.net is in de basis een webservice
-(<a href="http://ilk.uvt.nl/clam"><b>CLAM</b></a>), waarboven een
-webapplicatie is ontwikkeld. Intern werkt valkuil.net met het
-XML-formaat <a href="http://ilk.uvt.nl/folia"><b>FoLiA</b></a>, dat
-geschikt is voor de representatie van gedetecteerde fouten,
-correctiesuggesties, en gekozen correcties.</p>
+<p><b>Wat zit er onder de motorkap</b>? Data-gedreven, geheugengebaseerde
+taaltechnologie, gebouwd met onze open-source software <a
+href="https://github.com/proycon/gecco/">Gecco</a>. Ondanks dat de modules zich
+baseren op honderden miljoenen woorden Nederlandse tekst zijn ze lichtgewicht
+en snel; ze maken o.a. gebruik van <a
+href="http://ilk.uvt.nl/timbl"><b>Timbl</b></a>, een softwarepakket
+voor geoptimaliseerde geheugengebaseerde classificatie, dat we sinds de jaren
+'90 in Tilburg ontwikkelen; en van <a href="https://proycon.github.io/colibri-core/">Colibri Core</a>, een systeem om efficiënt n-grammen te modelleren. Valkuil/Gecco werkt als een RESTful webservice (<a
+    href="http://ilk.uvt.nl/clam"><b>CLAM</b></a>), waarboven een webapplicatie
+is ontwikkeld. Intern werkt valkuil.net met het XML-formaat <a
+    href="http://ilk.uvt.nl/folia"><b>FoLiA</b></a>, dat geschikt is voor de
+representatie van gedetecteerde fouten, correctiesuggesties, en gekozen
+correcties.</p>
+
+<ul>
+    <li>Valkuil broncode (middels Gecco)</li> - <a href="https://github.com/proycon/valkuil-gecco">https://github.com/proycon/valkuil-gecco</a>
+    <li>Gecco broncode</li> - <a href="https://github.com/proycon/gecco">https://github.com/proycon/gecco</a>
+</ul>
+
 
 <p><b>Kan ik valkuil.net inbouwen in mijn eigen
 webapplicatie/app/tekstverwerker</b>? Ja, graag! De webservice achter
