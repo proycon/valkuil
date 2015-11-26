@@ -3,7 +3,7 @@ from socket import gethostname
 from base64 import b64decode as D
 from os import environ
 
-DEBUG = True
+DEBUG = False
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -59,7 +59,13 @@ if hostname == "spitfire" or hostname == "spitfire.science.ru.nl":  #Nijmegen
     CLAMUSER = 'internal'
     CLAMPASS = D(open(environ['CLAMOPENER_PASSFILE']).read().strip())
     
-    DEBUG = True #TODO: reverse, No debug in production environment            
+    DEBUG = False
+
+    ALLOWED_HOSTS = [
+        '.valkuil.net', # Allow domain and subdomains
+        '.valkuil.net.', # Also allow FQDN and subdomains
+    ]
+
 elif hostname == 'echo' or hostname == 'nomia' or hostname == 'echo.uvt.nl' or hostname == 'nomia.uvt.nl': #Tilburg
     ROOT_DIR = "/var/www/valkuil/"
     DOCDIR = ROOT_DIR + 'userdocs/'
@@ -69,12 +75,14 @@ elif hostname == 'echo' or hostname == 'nomia' or hostname == 'echo.uvt.nl' or h
     # trailing slash if there is a path component (optional in other cases).
     # Examples: "http://media.lawrence.com", "http://example.com/media/"
     MEDIA_URL = 'http://valkuil.net/style/'
+    DEBUG = True
         
 elif hostname == "aurora" or hostname == "roma": #proycon's laptop/server
     ROOT_DIR = "/home/proycon/work/valkuil/"
     DOCDIR = ROOT_DIR + 'userdocs/'
     CLAMSERVICE = 'http://' + hostname + ':8080'
         
+    DEBUG = True
     # URL that handles the media served from MEDIA_ROOT. Make sure to use a
     # trailing slash if there is a path component (optional in other cases).
     # Examples: "http://media.lawrence.com", "http://example.com/media/"
