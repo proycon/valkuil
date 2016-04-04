@@ -381,9 +381,9 @@ def correct(request, id):
             for w in q:
                 changed = True
                 if reuse and not correctall:
-                    w.correct(new=new, set='valkuilset',cls=cls, annotator=annotator, annotatortype=folia.AnnotatorType.MANUAL, datetime=datetime.datetime.now(), reuse=reuse)
+                    w.correct(new=new, set='https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml',cls=cls, annotator=annotator, annotatortype=folia.AnnotatorType.MANUAL, datetime=datetime.datetime.now(), reuse=reuse)
                 else:
-                    w.correct(new=new, set='valkuilset',cls=cls, annotator=annotator, annotatortype=folia.AnnotatorType.MANUAL, datetime=datetime.datetime.now())
+                    w.correct(new=new, set='https://raw.githubusercontent.com/proycon/folia/master/setdefinitions/spellingcorrection.foliaset.xml',cls=cls, annotator=annotator, annotatortype=folia.AnnotatorType.MANUAL, datetime=datetime.datetime.now())
 
         if changed:
             foliadoc.save()
