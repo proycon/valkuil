@@ -291,6 +291,8 @@ def ignore(request, id):
 
 
         annotator = hashlib.md5(request.META['REMOTE_ADDR']).hexdigest()
+        if not foliadoc.declared(folia.ErrorDetection, 'errordetection'):
+            foliadoc.declare(folia.ErrorDetection, 'errordetection')
         w.append( folia.ErrorDetection(foliadoc, cls="noerror", annotator=annotator, annotatortype=folia.AnnotatorType.MANUAL ))
         foliadoc.save()
         if os.path.exists(settings.DOCDIR + id + '.xml.lock'):
