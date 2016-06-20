@@ -192,6 +192,7 @@ function initloader() {
     });    
     $('#startbutton').click(function() {        
         var d = new Date();
+        d = new Date(d.valueOf() + d.getTimezoneOffset() * 60000);
         $('#checksum').val(d.getFullYear() + d.getMonth() + 1 + d.getDate());
         showloader();        
         window.setTimeout(function(){$('#inputform').submit()}, 10);

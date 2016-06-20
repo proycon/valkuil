@@ -31,7 +31,7 @@ def process(request):
         return render_to_response('error.html',{'errormessage': "Er is geen geldige tekst ingevoerd!"} )
 
     #Verify checkum and other measures to counter spammers
-    d = datetime.datetime.now()
+    d = datetime.datetime.utcnow()
     try:
         if int(request.REQUEST['checksum']) != d.year + d.month + d.day:
             return render_to_response('error.html',{'errormessage': "Invalid checksum, are you sure you are human? If not, begone!"} )
