@@ -51,14 +51,14 @@ USE_L10N = True
 hostname = gethostname()
 if hostname == "spitfire" or hostname == "spitfire.science.ru.nl":  #Nijmegen
     ROOT_DIR = "/var/www2/valkuil/live/repo/valkuil/"
-    DOCDIR = "/var/www2/valkuil/live/writable/userdocs/" 
-    CLAMSERVICE = 'http://webservices-lst.science.ru.nl/valkuil/'
-    
+    DOCDIR = "/var/www2/valkuil/live/writable/userdocs/"
+    CLAMSERVICE = 'https://webservices-lst.science.ru.nl/valkuil/'
+
     MEDIA_URL = 'http://valkuil.science.ru.nl/style/' #TODO: adapt to new domains
-    
+
     CLAMUSER = 'internal'
     CLAMPASS = D(open(environ['CLAMOPENER_PASSFILE']).read().strip())
-    
+
     DEBUG = False
 
     ALLOWED_HOSTS = [
@@ -66,22 +66,11 @@ if hostname == "spitfire" or hostname == "spitfire.science.ru.nl":  #Nijmegen
         '.valkuil.net.', # Also allow FQDN and subdomains
     ]
 
-elif hostname == 'echo' or hostname == 'nomia' or hostname == 'echo.uvt.nl' or hostname == 'nomia.uvt.nl': #Tilburg
-    ROOT_DIR = "/var/www/valkuil/"
-    DOCDIR = ROOT_DIR + 'userdocs/'
-    CLAMSERVICE = 'http://webservices.ticc.uvt.nl/valkuil/'    
-    
-    # URL that handles the media served from MEDIA_ROOT. Make sure to use a
-    # trailing slash if there is a path component (optional in other cases).
-    # Examples: "http://media.lawrence.com", "http://example.com/media/"
-    MEDIA_URL = 'http://valkuil.net/style/'
-    DEBUG = True
-        
-elif hostname == "aurora" or hostname == "roma": #proycon's laptop/server
+elif hostname == "caprica" or hostname == "roma": #proycon's laptop/server
     ROOT_DIR = "/home/proycon/work/valkuil/"
     DOCDIR = ROOT_DIR + 'userdocs/'
     CLAMSERVICE = 'http://' + hostname + ':8080'
-        
+
     DEBUG = True
     # URL that handles the media served from MEDIA_ROOT. Make sure to use a
     # trailing slash if there is a path component (optional in other cases).
